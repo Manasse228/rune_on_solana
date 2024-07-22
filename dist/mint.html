@@ -1,0 +1,122 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MintSolana On Runes</title><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"><style></style><script defer="defer" src="mint.bundle.js"></script></head><body><nav class="navbar navbar-expand-lg navbar-dark bg-dark"><a class="navbar-brand" href="#">Solana Web3</a> <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button><div class="collapse navbar-collapse" id="navbarNav"><ul class="navbar-nav mr-auto"><li class="nav-item"><a class="nav-link" href="/">Home</a></li><li class="nav-item"><a class="nav-link" href="/deploy">Deploy</a></li><li class="nav-item"><a class="nav-link active" href="/mint">Mint</a></li><li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">My Profile</a><ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink"><li><a class="dropdown-item" href="/mybalance">My Assets</a></li><li><hr class="dropdown-divider"></li><li><a class="dropdown-item" href="/mydeploy">My Deploy</a></li><li><a class="dropdown-item" href="#">My Trades</a></li></ul></li><li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">My Transaction</a><ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink"><li><a class="dropdown-item" href="#">Mints</a></li><li><a class="dropdown-item" href="#">Burn</a></li><li><a class="dropdown-item" href="#">Airdrop</a></li><li><a class="dropdown-item" href="#">Transfer</a></li></ul></li></ul><div id="wallet-info" class="navbar-text ml-auto" style="display: none;"><span id="public-key"></span> <span id="balance"></span> <button id="disconnect" class="btn btn-danger ml-2">Deconnexion</button></div></div></nav><table id="table" data-toolbar="#toolbar" data-search="true" data-show-refresh="true" data-show-toggle="true" data-show-fullscreen="true" data-show-columns="true" data-show-columns-toggle-all="true" data-detail-view="false" data-show-export="false" data-click-to-select="false" data-detail-formatter="detailFormatter" data-minimum-count-columns="2" data-show-pagination-switch="true" data-pagination="true" data-id-field="id" data-page-list="[10, 25, 50, 100, all]" data-show-footer="false" data-toggle="table" data-height="800" data-url="./data.json" data-response-handler="responseHandler"></table><script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script><script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/tableExport.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table-locale-all.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/extensions/export/bootstrap-table-export.min.js"></script><script src="mint.bundle.js"></script><script>var $table = $('#table');
+  
+    var selections = [];
+  
+    function getIdSelections() {
+      return $.map($table.bootstrapTable('getSelections'), function (row) {
+        return row.id;
+      });
+    }
+  
+    function responseHandler(res) {
+      $.each(res.rows, function (i, row) {
+        row.state = $.inArray(row.id, selections) !== -1;
+      });
+      return res;
+    }
+  
+    function operateFormatter(value, row, index) {
+      return [
+        '<button class="btn btn-primary mint" type="button">Mint</button>',
+      ].join('');
+    }
+
+    function logoFormatter(value, row, index) {
+      return '<img src="' + value + '" alt="Logo" style="width: 50px; height: 50px;"/>';
+    }
+
+    function progressFormatter(value, row, index) {
+      return `
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" aria-valuenow="${value}" aria-valuemin="0" aria-valuemax="100" style="width: ${value}%"></div>
+        </div>`;
+    }
+
+    window.operateEvents = {
+        'click .mint': function (e, value, row, index) {
+          window.open('/token?name=' + row.name, '_blank');
+          //alert('You click like action, row: ' + JSON.stringify(row.name))
+        }
+    }
+  
+  
+    function initTable() {
+      $table.bootstrapTable('destroy').bootstrapTable({
+        height: 550,
+        locale: 'en-US',
+        columns: [
+          {
+            title: '',
+            field: 'logo',
+            align: 'center',
+            valign: 'middle',
+            sortable: false,
+            formatter: logoFormatter
+          },
+          {
+            title: 'Name',
+            field: 'name',
+            align: 'center',
+            valign: 'middle',
+            sortable: true
+          },
+          {
+            title: 'Mints',
+            field: 'mints',
+            align: 'center',
+            valign: 'middle',
+            sortable: true
+          },
+          {
+            title: 'Holders',
+            field: 'holders',
+            align: 'center',
+            valign: 'middle',
+            sortable: true
+          },
+          {
+            title: 'Premine (%)',
+            field: 'premine',
+            align: 'center',
+            valign: 'middle',
+            sortable: true
+          },
+          {
+            title: 'Progress',
+            field: 'progress',
+            align: 'center',
+            valign: 'middle',
+            sortable: true,
+            formatter: progressFormatter
+          },
+          {
+            title: 'Airdrop',
+            field: 'operate',
+            align: 'center',
+            valign: 'middle',
+            clickToSelect: false,
+            events: window.operateEvents,
+            formatter: operateFormatter
+          }
+        ]
+      });
+
+      
+  
+      $table.on('check.bs.table uncheck.bs.table ' +
+        'check-all.bs.table uncheck-all.bs.table',
+        function () {
+          selections = getIdSelections();
+        });
+  
+      $table.on('all.bs.table', function (e, name, args) {
+        //console.log(name, args);
+      });
+  
+      
+    }
+  
+    $(function () {
+      initTable();
+      $('#locale').change(initTable);
+    });</script></body></html>

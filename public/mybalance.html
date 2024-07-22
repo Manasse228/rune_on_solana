@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My deploy On Runes</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <style>
+    .pagecontents {
+      background-color: #1b1b1b !important;
+      color: white !important;
+    }
+
+    body {
+      background-color: #1b1b1b;
+      color: white;
+    }
+
+    /* Table Header Background Color */
+   .table thead th {
+        color: white; /* White text */
+    }
+
+    .table tbody {
+        color: white;
+    }
+
+    .table tbody tr:hover {
+        color: white;
+    }
+
+    .btn-rounded {
+      border-radius: 25px;
+    }
+  </style>
+  
+</head>
+<body>
+
+
+  <div class='dashboard'>
+    
+    <div class="dashboard-nav">
+        <header>
+          <a href="#hop" class="menu-toggle">
+            <i class="fas fa-bars"> </i>
+          </a>
+          <a href="#" class="brand-logo">
+            <i class="fas fa-anchor"></i>
+            <span>Rune to Solana</span>
+          </a>
+        </header>
+        <nav class="dashboard-nav-list">
+          <a href="/" class="dashboard-nav-item"> <i class="fas fa-home"></i> Home </a>
+          <a href="/mybalance" class="dashboard-nav-item active"> <i class="fas fa-wallet"></i> Spot </a>
+          <a href="/deploy" class="dashboard-nav-item "><i class="fas fa-wifi"></i> Deploy </a>
+
+            <div class='dashboard-nav-dropdown'><a href="#!" class="dashboard-nav-item dashboard-nav-dropdown-toggle"><i
+                    class="fas fa-hand-holding-usd"></i> Mint </a>
+                <div class='dashboard-nav-dropdown-menu'>
+                  <a href="/ongoingmint" class="dashboard-nav-dropdown-item">Active</a>
+                  <a href="/upcomingmint" class="dashboard-nav-dropdown-item">Coming soon</a>
+                  <a href="/passedmint" class="dashboard-nav-dropdown-item">Completed</a>                   
+                  </div>
+            </div>
+            <div class='dashboard-nav-dropdown'><a href="#!" class="dashboard-nav-item dashboard-nav-dropdown-toggle"><i
+                    class="fas fa-exchange-alt"></i> My Operations </a>
+                <div class='dashboard-nav-dropdown-menu'>
+                  <a href="/mymints"  class="dashboard-nav-dropdown-item">Mint</a>
+                  <a href="/mydeploy" class="dashboard-nav-dropdown-item">Deploy</a>  
+                  <a href="/myburn" class="dashboard-nav-dropdown-item">Burn</a>
+                  <a href="/mytransfer" class="dashboard-nav-dropdown-item">Transfer</a>
+                  <a href="#" class="dashboard-nav-dropdown-item">Airdrop</a>                   
+                  </div>
+            </div>
+
+          <!--<div class="nav-item-divider"></div>-->
+          
+        </nav>
+    </div>
+
+
+    <div class='dashboard-app'>
+        
+        <header class='dashboard-toolbar'>
+          <a href="#!" class="menu-toggle">
+            <i class="fas fa-bars"></i>
+          </a>
+          <div id="wallet-info" class="navbar-text ml-auto" style="display: none;">
+            <span id="public-key"></span>
+            <span id="balance"></span>
+      
+            <a href="#" id="disconnect" style="color: white;" ><i class="fas fa-sign-out-alt"></i> </a>
+          </div>
+        </header>
+        
+        <div class='dashboard-content pagecontents'>
+            <div class=' '>
+                <div class='card pagecontents'>
+                    <div class='card-header'>
+                        <h1>Your assets</h1>
+                    </div>
+                    <div class='card-body'>
+                       
+                      <div id="content" class=" mt-5">
+
+                            <table
+                            id="table"
+                            data-toolbar="#toolbar"
+                            data-search="true"
+                            data-show-refresh="false"
+                            data-show-toggle="false"
+                            data-show-fullscreen="false"
+                            data-show-columns="true"
+                            data-show-columns-toggle-all="false"
+                            data-detail-view="false"
+                            data-show-export="false"
+                            data-click-to-select="false"
+                            data-detail-formatter="detailFormatter"
+                            data-minimum-count-columns="2"
+                            data-show-pagination-switch="false"
+                            data-pagination="true"
+                            data-id-field="id"
+                            data-page-list="[10, 25, 50, 100, all]"
+                            data-show-footer="false"
+                            data-url=""
+                            data-response-handler="responseHandler">
+                          </table>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="transferMyToken" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Token Transfer</h5>
+        </div>
+        <div class="modal-body">
+          <div id="transferErrorNotification" class="alert alert-danger" style="display: none;"></div>
+
+
+          <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+            <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </symbol>
+            <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+            </symbol>
+            <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+            </symbol>
+          </svg>
+
+          <div class="alert alert-success d-flex d-none" style="display: none !important;" role="alert" id="transferSuccessNotification" >
+            <svg style="margin-right: 12px;" class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+            <div id="transferSuccessNotification_message">
+              Token transfer with success
+            </div>
+          </div>
+          
+            <form id="tokenUpdateForm" >
+                <div id="form-fields">
+                    <div class="form-group">
+                      <label for="tokenNameId" class="required">Token
+                      <span data-toggle="tooltip" class="info-bubble" title="Token">&#9432;</span>
+                      </label>
+                      <input type="text" class="form-control" id="tokenNameId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="tokenReceiver" class="required">Receiver
+                        <span data-toggle="tooltip" class="info-bubble" title="Receiver">&#9432;</span>
+                        </label>
+                        <input type="text" class="form-control" id="tokenReceiver" required placeholder="bnr...gh7">
+                    </div>
+                    <div class="form-group">
+                        <label for="tokenAmount">Amount
+                        <span data-toggle="tooltip" class="info-bubble" title="Token amount for transfer">&#9432;</span>
+                        </label>
+                        <input type="number" class="form-control" id="tokenAmount" required placeholder="1000">
+                        
+                    </div>
+                </div>              
+              </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-rounded" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-outline-primary rounded-pill transferButton btn-rounded" id="transferButton">Transfer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="burnMyToken" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Token Burn</h5>
+        </div>
+        <div class="modal-body">
+
+          <div id="burnErrorNotification" class="alert alert-danger" style="display: none;"></div>
+
+          <div class="alert alert-success d-flex d-none" style="display: none !important;" role="alert" id="burnSuccessNotification" >
+            <svg style="margin-right: 12px;" class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+            <div id="burnSuccessNotification_message">
+              Token burn with success
+            </div>
+          </div>
+
+            <form id="tokenUpdateForm" >
+                <div id="form-fields">
+                  <div class="form-group">
+                    <label for="tokenNameIdBurn" class="required">Token
+                    <span data-toggle="tooltip" class="info-bubble" title="Token">&#9432;</span>
+                    </label>
+                    <input type="text" class="form-control" id="tokenNameIdBurn" readonly>
+                  </div>
+                    <div class="form-group">
+                        <label for="tokenAmountForBurn">Amount
+                        <span data-toggle="tooltip" class="info-bubble" title="Token amount for burn">&#9432;</span>
+                        </label>
+                        <input type="number" class="form-control" id="tokenAmountForBurn" required placeholder="1000">
+                    </div>
+                </div>              
+              </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-rounded" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-outline-primary rounded-pill btn-rounded" id="burnButton">Burn &#x1f525;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="airdropMyToken" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Token Airdrop</h5>
+        </div>
+        <div class="modal-body">
+            <form id="tokenUpdateForm" >
+                <div id="form-fields">
+                  <div class="form-group">
+                    <label for="tokenNameIdAirdrop" class="required">Token
+                    <span data-toggle="tooltip" class="info-bubble" title="Token">&#9432;</span>
+                    </label>
+                    <input type="text" class="form-control" id="tokenNameIdAirdrop" readonly>
+                  </div>
+                    <div class="form-group">
+                        <label for="tokenAirdropData">Data
+                        <span data-toggle="tooltip" class="info-bubble" title="Airdrop Data">&#9432;</span>
+                        </label>
+                        <textarea type="number" class="form-control" id="tokenAirdropData" required placeholder=""></textarea>
+                    </div>
+                </div>              
+              </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger btn-rounded" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-outline-primary rounded-pill btn-rounded">Airdrop (Soon...) </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+ 
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/tableExport.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table-locale-all.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/extensions/export/bootstrap-table-export.min.js"></script>
+  
+
+  <script src="mybalance.bundle.js"></script>
+
+
+</body>
+</html>

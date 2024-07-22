@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Token Page</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+
+  <style>
+
+    .pagecontents {
+      background-color: #1b1b1b !important;
+      color: white !important;
+    }
+
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1050;
+    }
+
+    body {
+      background-color: #1b1b1b;
+      color: white;
+    }
+    .progress-bar {
+      background-color: #007bff;
+    }
+    .progress-bar-danger {
+      background-color: #dc3545;
+    }
+
+    #tokenDescription {
+      white-space: normal; /* Permettre au texte de revenir à la ligne */
+      word-wrap: break-word; /* Casser les mots longs */
+    }
+    
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+    .custom-slider {
+      width: 100%;
+    }
+
+    .divider {
+      border-left: 1px solid white;
+      height: 20px;
+      margin: 0 10px;
+    }
+
+    .start-info {
+      color: #08f000e1 !important;
+    }
+
+    .end-info {
+      color: #e23e28 !important;
+    }
+
+    
+    .circle-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: auto; /* Taille du cercle */
+      height: auto; /* Taille du cercle */
+      overflow: hidden;
+    }
+
+    .circle-image {
+      width: 100%; /* Ajuster l'image à la taille du conteneur */
+      height: 100%; /* Ajuster l'image à la taille du conteneur */
+      object-fit: cover; /* Couper l'image pour remplir le conteneur */
+    }
+
+    .table-dark {
+        background-color: #1a1a1a;
+    }
+    .percentage-bar {
+        background-color: #0e9ef1;
+        height: 10px;
+        display: inline-block;
+        margin-bottom: 0;
+
+        width: 34.2%;
+    border-radius: 5px;
+   
+
+    margin-right: 5px;
+    }
+    .amount-icon {
+        color: red;
+    }
+
+    .percentage-container {
+    display: flex;
+    align-items: center;
+  }
+
+
+   /* Table Header Background Color */
+   .table thead th {
+        color: white; /* White text */
+    }
+
+    .table tbody {
+        color: white;
+    }
+
+    .table tbody tr:hover {
+        color: white;
+    }
+
+    .table td, .table th {
+      border-top: none;
+    }
+
+
+
+        
+  </style>
+</head>
+<body>
+
+  <div class='dashboard'>
+    
+    <div class="dashboard-nav">
+        <header>
+          <a href="#hop" class="menu-toggle">
+            <i class="fas fa-bars"> </i>
+          </a>
+          <a href="#" class="brand-logo">
+            <i class="fas fa-anchor"></i>
+            <span>Rune to Solana</span>
+          </a>
+        </header>
+        <nav class="dashboard-nav-list">
+          <a href="/" class="dashboard-nav-item"> <i class="fas fa-home"></i> Home </a>
+          <a href="/mybalance" class="dashboard-nav-item"> <i class="fas fa-wallet"></i> Spot </a>
+          <a href="/deploy" class="dashboard-nav-item "><i class="fas fa-wifi"></i> Deploy </a>
+
+            <div class='dashboard-nav-dropdown'><a href="#!" class="dashboard-nav-item dashboard-nav-dropdown-toggle"><i
+                    class="fas fa-hand-holding-usd"></i> Mint </a>
+                <div class='dashboard-nav-dropdown-menu'>
+                  <a href="/ongoingmint" class="dashboard-nav-dropdown-item">Active</a>
+                  <a href="/upcomingmint" class="dashboard-nav-dropdown-item">Coming soon</a>
+                  <a href="/passedmint" class="dashboard-nav-dropdown-item">Completed</a>                   
+                  </div>
+            </div>
+            <div class='dashboard-nav-dropdown'><a href="#!" class="dashboard-nav-item dashboard-nav-dropdown-toggle"><i
+                    class="fas fa-exchange-alt"></i> My Operations </a>
+                <div class='dashboard-nav-dropdown-menu'>
+                  <a href="/mymints"  class="dashboard-nav-dropdown-item">Mint</a>
+                  <a href="/mydeploy" class="dashboard-nav-dropdown-item">Deploy</a>  
+                  <a href="/myburn" class="dashboard-nav-dropdown-item">Burn</a>
+                  <a href="/mytransfer" class="dashboard-nav-dropdown-item">Transfer</a>
+                  <a href="#" class="dashboard-nav-dropdown-item">Airdrop</a>                  
+                  </div>
+            </div>
+
+          <!--<div class="nav-item-divider"></div>-->
+          
+        </nav>
+    </div>
+
+
+    <div class='dashboard-app'>
+        
+        <header class='dashboard-toolbar'>
+          <a href="#!" class="menu-toggle">
+            <i class="fas fa-bars"></i>
+          </a>
+          <div id="wallet-info" class="navbar-text ml-auto" style="display: none;">
+            <span id="public-key"></span>
+            <span id="balance"></span>
+      
+            <a href="#" id="disconnect" style="color: white;" ><i class="fas fa-sign-out-alt"></i> </a>
+          </div>
+        </header>
+        
+        <div class='dashboard-content pagecontents'>
+            <div class='container '>
+                <div class='card pagecontents'>
+                    <div class='card-header'>
+                        <h1>Mint me now</h1>
+                    </div>
+                    <div class='card-body'>
+                       
+                                <div class="container mt-5">
+                                                  <div class="d-flex justify-content-center">
+                                                      <div class="circle-container">
+                                                        <img src="" alt="Image" class="circle-image" id="logoid">
+                                                      </div>
+                                                    </div>
+
+                                                    <div class="d-flex align-items-center mb-2">
+                                                      <span class="mr-3"><h1 class="mb-0" id="tokenNameTitle"></h1></span>
+                                                      <span>
+                                                          <a href="" id="twitterlink" target="_blank">
+                                                              <img src="./asset/twitter-logo-2429.png" alt="Image" class="circle-image" style="width: 15%;">
+                                                          </a>
+
+                                                      </span>
+                                                      
+                                                    </div>
+                                                    
+                                                  <p id="tokenDescription"></p>
+                                                </div>
+
+                                                <div class="container mt-5">
+                                                  <div class="card bg-dark text-white">
+                                                    <div class="card-body">
+
+
+
+
+                                                      <table class="table text-nowrap mb-0 align-middle">
+                                                        <tbody>
+                                                          <tr>
+                                  
+                                                            <td>
+                                                              <h5 class="mb-0 fs-4" id="premineId"></h5>
+                                                              <p class="text-muted mb-2">Premine</p>
+                                                              <div class="progress bg-light w-100" style="height: 4px">
+                                                                <div class="progress-bar bg-warning" role="progressbar" aria-label="Example 4px high"
+                                                                  style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                              </div>
+                                                            </td>
+                                  
+                                                            <td>
+                                                              <h5 class="mb-0 fs-4" id="holderid"></h5>
+                                                              <p class="text-muted mb-2">Holders</p>
+                                                              <div class="progress bg-light w-100" style="height: 4px">
+                                                                <div class="progress-bar bg-danger-subtle" role="progressbar" aria-label="Example 4px high"
+                                                                  style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                              </div>
+                                                            </td>
+                                  
+                                                            <td>
+                                                              <h5 class="mb-0 fs-4" id="burnAmount"></h5>
+                                                              <p class="text-muted mb-2" >Total Burn</p>
+                                                              <div class="progress bg-light w-100" style="height: 4px">
+                                                                <div class="progress-bar bg-info" role="progressbar" aria-label="Example 4px high"
+                                                                  style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                              </div>
+                                                            </td>
+                                  
+                                                            <td>
+                                                              <h5 class="mb-0 fs-4" id="blocknumber"> </h5>
+                                                              <p class="text-muted mb-2">Deploy Tx</p>
+                                                              <div class="progress bg-light w-100" style="height: 4px">
+                                                                <div class="progress-bar bg-secondary" role="progressbar" aria-label="Example 4px high"
+                                                                  style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                              </div>
+                                                            </td>
+                                  
+                                                            <td>
+                                                              <h5 class="mb-0 fs-4" id="mints"></h5>
+                                                              <p class="text-muted mb-2">Total Mints</p>
+                                                              <div class="progress bg-light w-100" style="height: 4px">
+                                                                <div class="progress-bar bg-warning" role="progressbar" aria-label="Example 4px high"
+                                                                  style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                              </div>
+                                                            </td>
+                                                           
+                                                          </tr>
+                                  
+                                                          <tr>
+                                  
+                                                            <td>
+                                                              <h5 class="mb-0 fs-4" id="totalTransfer"></h5>
+                                                              <p class="text-muted mb-2">Total Transfers</p>
+                                                              <div class="progress bg-light w-100" style="height: 4px">
+                                                                <div class="progress-bar bg-success-subtle" role="progressbar" aria-label="Example 4px high"
+                                                                  style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                              </div>
+                                                            </td>
+                                  
+                                                            <td>
+                                                              <h5 class="mb-0 fs-4" id="maxsupplyid"></h5>
+                                                              <p class="text-muted mb-2">Max Supply</p>
+                                                              <div class="progress bg-light w-100" style="height: 4px">
+                                                                <div class="progress-bar bg-info" role="progressbar" aria-label="Example 4px high"
+                                                                  style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                              </div>
+                                                            </td>
+                                  
+                                                            <td>
+                                                              <h5 class="mb-0 fs-4" id="circulatingsupply"></h5>
+                                                              <p class="text-muted mb-2">Circulating Supply</p>
+                                                              <div class="progress bg-light w-100" style="height: 4px">
+                                                                <div class="progress-bar bg-success" role="progressbar" aria-label="Example 4px high"
+                                                                  style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                              </div>
+                                                            </td>
+                                  
+                                                            <td>
+                                                              <h5 class="mb-0 fs-4" id="deploytime"></h5>
+                                                              <p class="text-muted mb-2">Deploy Time </p>
+                                                              <div class="progress bg-light w-100" style="height: 4px">
+                                                                <div class="progress-bar bg-light" role="progressbar" aria-label="Example 4px high"
+                                                                  style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                              </div>
+                                                            </td>
+                                  
+                                                            <td>
+                                                              <h5 class="mb-0 fs-4" id="permint"></h5>
+                                                              <p class="text-muted mb-2">Per Mint</p>
+                                                              <div class="progress bg-light w-100" style="height: 4px">
+                                                                <div class="progress-bar bg-danger" role="progressbar" aria-label="Example 4px high"
+                                                                  style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                              </div>
+                                                            </td>
+                                                           
+                                                          </tr>
+                                                        </tbody>
+                                                      </table>
+
+
+
+                                                      <hr class="custom-hr">
+
+                                                      <div id="fixId" style="display: none;">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                          <span>Mint Progress</span>
+                                                          <span id="fixprogress">3.04% [12000/21000000]</span>
+                                                        </div>
+                                                        <div class="progress my-2">
+                                                          <div id="fixprogressBarDesign" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 3.04%;" aria-valuenow="3.04" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
+                                                      </div>
+                                                      
+                                                      <div id="fairId" style="display: none;">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                          <span>Block Progress</span>
+                                                          <span id="mintprogress"></span>
+                                                        </div>
+                                                        <div class="progress my-2">
+                                                          <div id="progressBarDesign" class="progress-bar progress-bar-danger progress-bar-striped progress-bar-animated" role="progressbar" style="width: 10%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
+                                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                                          <span id="startBlock">844032 Start Block</span>
+                                                          <span id="currentBlock">  <i class="fas fa-circle text-info"> </i> 847508 Current Block</span>
+                                                          <!--<i class="fas fa-circle text-info"> </i>  <div class="diode"></div>-->
+                                                          <span id="endBlock">848064 End Block</span>
+                                                        </div>
+                                                      </div>
+
+                                                      <!-- <div class="text-center my-2">OR</div> -->
+
+                                                    </div>
+                                                  </div>
+                                                  <div class="form-group mt-4">
+                                                    <label for="runeTicker">Receiver</label>
+                                                    <input type="text" class="form-control" id="receiver" value="" readonly>
+                                                  </div>
+                                                  <div class="form-group">
+                                                    <label for="amount">Amount</label>
+                                                    <input type="text" class="form-control" id="amount" value="" readonly>
+                                                  </div>
+                                                  <button class="btn btn-primary btn-block" id="mint-token" style="display: none;">Mint</button>
+                                                  <button class="btn btn-danger btn-block" id="trade-token" style="display: none;">Trade</button>
+
+                                                </div>
+
+                                                <div class="container mt-5">
+                                                  <table
+                                                      id="table"
+                                                      data-toolbar="#toolbar"
+                                                      data-search="true"
+                                                      data-show-refresh="false"
+                                                      data-show-toggle="false"
+                                                      data-show-fullscreen="false"
+                                                      data-show-columns="false"
+                                                      data-show-columns-toggle-all="false"
+                                                      data-detail-view="false"
+                                                      data-show-export="false"
+                                                      data-click-to-select="false"
+                                                      data-detail-formatter="detailFormatter"
+                                                      data-minimum-count-columns="2"
+                                                      data-show-pagination-switch="false"
+                                                      data-pagination="true"
+                                                      data-id-field="id"
+                                                      data-page-list="[10, 25, 50, 100, all]"
+                                                      data-show-footer="false"
+                                                      data-toggle="table"
+                                                      data-height="800"
+                                                      data-response-handler="responseHandler">
+                                                  </table>
+                                                </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+  </div>
+
+
+
+
+  <div class="toast-container">
+     <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="10000">
+    <div class="toast-header">
+      <img src="..." class="rounded mr-2" alt="...">
+      <strong class="mr-auto">Bootstrap</strong>
+      <small class="text-muted">2 seconds ago</small>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="toast-body">
+      Heads up, toasts will stack automatically
+    </div>
+  </div>
+  </div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/tableExport.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table-locale-all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/extensions/export/bootstrap-table-export.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+
+<script src="token.bundle.js"></script>
+</body>
+</html>

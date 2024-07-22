@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Page</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #111;
+            color: #fff;
+        }
+        .card {
+            background-color: #222;
+            border: none;
+            margin-bottom: 20px;
+        }
+        .card .btn {
+            background-color: #d9534f;
+            border: none;
+        }
+        .card .btn:hover {
+            background-color: #c9302c;
+        }
+        .card-header {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .card-body .amount {
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .card-body .price {
+            color: #d9534f;
+            font-weight: bold;
+            text-align: center;
+        }
+        .card-body .usd-price {
+            font-size: 0.9rem;
+            color: #aaa;
+            text-align: center;
+        }
+        .navbar, .nav-link {
+            background-color: #222;
+            color: #fff;
+        }
+        .navbar-brand {
+            color: #fff;
+        }
+        .navbar-brand:hover, .nav-link:hover {
+            color: #c9302c;
+        }
+
+        .content-row {
+            background-color: #222;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .content-row img {
+            width: 25px;
+            height: 25px;
+            margin-right: 8px;
+        }
+        .logo-price {
+            width: 25px;
+            height: 25px;
+            margin-right: 8px;
+        }
+        .content-row .price-text {
+            margin-left: auto;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">Trade</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Activities</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">My</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <h2>Buy asct</h2>
+        <p>Listings: 251</p>
+        <div class="row">
+            <!-- Card template -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">Rune</div>
+                    <div class="card-body">
+                        <h3 class="amount">5000</h3>
+
+                        <div class="container mt-3">
+                            <div class="content-row">
+                                <img class="logo-price" src="asset/Solana_logo.png" alt="icon">
+                                <span class="price">0.0002 / asct</span>
+                            </div>
+                        </div>
+
+                        <p class="usd-price">$ 0.0078</p>
+
+                        <div class="container mt-4">
+                            <div class="content-row">
+                                <img src="asset/pngwing.com.png" alt="icon">
+                                <span>0.58</span>
+                                <span class="price-text">$ 164.4218</span>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-danger btn-block">Buy</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Repeat this card for each item -->
+            <!-- Other cards -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">10,000</div>
+                    <div class="card-body">
+                        <p class="price">0.0003 / asct</p>
+                        <p class="usd-price">$ 0.0081</p>
+                        <p>3 - $ 81.162</p>
+                        <button class="btn btn-danger btn-block">Buy</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">4,000</div>
+                    <div class="card-body">
+                        <p class="price">0.0003 / asct</p>
+                        <p class="usd-price">$ 0.0102</p>
+                        <p>1.52 - $ 41.122</p>
+                        <button class="btn btn-danger btn-block">Buy</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">14,000</div>
+                    <div class="card-body">
+                        <p class="price">0.0003 / asct</p>
+                        <p class="usd-price">$ 0.0102</p>
+                        <p>5.32 - $ 143.9272</p>
+                        <button class="btn btn-danger btn-block">Buy</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">12,000</div>
+                    <div class="card-body">
+                        <p class="price">0.0003 / asct</p>
+                        <p class="usd-price">$ 0.0102</p>
+                        <p>4.56 - $ 123.3662</p>
+                        <button class="btn btn-danger btn-block">Buy</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">1,000</div>
+                    <div class="card-body">
+                        <p class="price">0.0004 / asct</p>
+                        <p class="usd-price">$ 0.0108</p>
+                        <p>0.4 - $ 10.8216</p>
+                        <button class="btn btn-danger btn-block">Buy</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">20,000</div>
+                    <div class="card-body">
+                        <p class="price">0.0004 / asct</p>
+                        <p class="usd-price">$ 0.0108</p>
+                        <p>8 - $ 216.432</p>
+                        <button class="btn btn-danger btn-block">Buy</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">18,000</div>
+                    <div class="card-body">
+                        <p class="price">0.0005 / asct</p>
+                        <p class="usd-price">$ 0.0151</p>
+                        <p>10.08 - $ 272.7043</p>
+                        <button class="btn btn-danger btn-block">Buy</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">300</div>
+                    <div class="card-body">
+                        <p class="price">0.003 / asct</p>
+                        <p class="usd-price">$ 0.0811</p>
+                        <p>0.9 - $ 24.3486</p>
+                        <button class="btn btn-danger btn-block">Buy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
