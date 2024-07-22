@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   updateFormFields(); // Initialize the form with the default selected radio button
 
-  const handleDeployClick = async (data, dataToSave) => {    
+  const handleDeployClick = async (data, dataToSave, errorNotification) => {    
     wallet = window.solana;
     await wallet.connect();
     const fromWallet = wallet;
@@ -200,10 +200,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
       const transaction = await CreateTransaction(fromWallet, publicKey.toString(), data, connexion);
-
-       // Simulate the transaction
-       //const isSimulationSuccessful = await SimulateTransaction(transaction, connection);
-
       const { signature } = await wallet.signAndSendTransaction(transaction);
 
       notyf.success('Deployment is underway. Please wait');
@@ -215,25 +211,43 @@ document.addEventListener('DOMContentLoaded', async () => {
       const confirmedTransaction = await WaitForConfirmations(connexion, signature);
 
         // from, to, transactionHash, blockNumber, blockTime, description, twitterlink, logo
-        dataToSave.from = publicKey.toString();
+        /*dataToSave.from = publicKey.toString();
         dataToSave.to = publicKey.toString();
         dataToSave.transactionHash = signature;
         dataToSave.blockNumber = confirmedTransaction.slot;
-        dataToSave.blockTime = confirmedTransaction.blockTime;
+        dataToSave.blockTime = confirmedTransaction.blockTime;*/
+
+        const dataObject = {
+          transactionHash: signature,
+          description: dataToSave.description,
+          twitterlink: dataToSave.twitterlink,
+          logo: dataToSave.logo
+        };
 
         const selectedType = document.querySelector('input[name="mintType"]:checked').value;
-        const response = await fetch(selectedType === 'fixCap' ? '/api/fix/saveToken' : '/api/fair/saveToken', {
+        const response = await fetch(selectedType === 'fixCap' ? '/memefi/fix/saveToken' : '/memefi/fair/saveToken', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `${process.env.JWT_TOKEN}`
           },
-          body: JSON.stringify(dataToSave),
+          body: JSON.stringify(dataObject),
         });
-        const result = await response.json();
+        const _result = await response.json();
+        const result = _result.data;
 
-        if (!result) {
-          notyf.success('Yur deploy is not valid by the system, please contact admin');
-        } else {
+        if (_result && _result.errorcode === 400 && _result.errortext) {
+          notyf.error(_result.errortext);
+          errorNotification.innerHTML = _result.errortext;
+          errorNotification.style.display = 'block'
+        }
+
+        if (result && result.length > 0) {
+          errorNotification.innerHTML = result.join('');
+          errorNotification.style.display = 'block';
+        }
+
+        if (result && result.length === 0) {
           notyf.success('You can now proceed with the next steps. Deployment is complete.');
 
           deployDivMsg.innerHTML = `<p>Token deploy with success. <a target="_blank" href="https://solscan.io/tx/${signature}">Your transaction hash</a> <br /> You will be redirected in 15 seconds.</p>`;
@@ -244,11 +258,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = `/token?name=${dataToSave.tick}`;
           }, 15000); // 15000 millisecondes = 15 secondes
         }
-
-
-
     } catch (error) {
-      console.error('Transaction failed:', error);
+      notyf.error("Try again a second time by refreshing the page");
     }
   };
 
@@ -389,26 +400,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 const checkData = dataObject;
                 checkData.logo = document.getElementById("fix_image").value;
-                const response = await fetch('/api/fix/checkdeployToken', {
+                const response = await fetch('/memefi/fix/checkdeployToken', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `${process.env.JWT_TOKEN}`
                   },
                   body: JSON.stringify(checkData),
                 });
-                const result = await response.json();
+                const _saveResult = await response.json();
+                const saveResult = _saveResult.data;
 
-                const dataToSave = dataObject;
-                dataToSave.description = document.getElementById("fix_tokenDescription").value;
-                dataToSave.twitterlink = document.getElementById("fix_twitter").value;
-
-                if (result.length === 0) {
-                  handleDeployClick(data, dataToSave);
-                } else {
-                  errorNotification.innerHTML = result.join('');
+                if (_saveResult && _saveResult.errorcode === 400) {
+                  notyf.error(_saveResult.errortext);
+                  errorNotification.innerHTML = _saveResult.errortext;
                   errorNotification.style.display = 'block'
                 }
-                
+
+                if (saveResult && saveResult.length > 0) {
+                  errorNotification.innerHTML = saveResult.join('');
+                  errorNotification.style.display = 'block';
+                }
+
+                if (saveResult && saveResult.length === 0) {
+                  const dataToSave = dataObject;
+                  dataToSave.description = document.getElementById("fix_tokenDescription").value;
+                  dataToSave.twitterlink = document.getElementById("fix_twitter").value;
+                  dataToSave.logo = checkData.logo;
+                  handleDeployClick(data, dataToSave, errorNotification);
+                } 
             }
         } else {
 
@@ -436,26 +456,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 const checkData = dataObject;
                 checkData.logo = document.getElementById("fair_image").value;
-                const response = await fetch('/api/fair/checkdeployToken', {
+                const response = await fetch('/memefi/fair/checkdeployToken', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `${process.env.JWT_TOKEN}`
                   },
                   body: JSON.stringify(checkData),
                 });
-                const result = await response.json();
-                console.log('oups ', result)
+                const _saveResult = await response.json();
+                const saveResult = _saveResult.data;
 
-                const dataToSave = dataObject;
-                dataToSave.description = document.getElementById("fair_tokenDescription").value;
-                dataToSave.twitterlink = document.getElementById("fair_twitter").value;
-
-                if (result.length === 0) {
-                  handleDeployClick(data, dataToSave);
-                } else {
-                  errorNotification.innerHTML = result.join('');;
+                if (_saveResult && _saveResult.errorcode === 400) {
+                  notyf.error(_saveResult.errortext);
+                  errorNotification.innerHTML = _saveResult.errortext;
                   errorNotification.style.display = 'block'
                 }
+
+                if (saveResult && saveResult.length > 0) {
+                  errorNotification.innerHTML = saveResult.join('');
+                  errorNotification.style.display = 'block';
+                }
+
+                if (saveResult && saveResult.length === 0) {
+                  const dataToSave = dataObject;
+                  dataToSave.description = document.getElementById("fair_tokenDescription").value;
+                  dataToSave.twitterlink = document.getElementById("fair_twitter").value;
+                  dataToSave.logo = checkData.logo;
+                  handleDeployClick(data, dataToSave, errorNotification);
+                } 
             }
         }
       }

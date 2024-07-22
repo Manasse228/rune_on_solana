@@ -117,6 +117,205 @@ module.exports = {
             avalancheMainetInfura: "https://avalanche-mainnet.infura.io/v3/4ac6fc931b6d4d9fa479bf98b5f30e24",
         }
     },
+    validate_fairDeploy_Object(obj) {
+        // Vérifier que tous les attributs existent et ne sont pas nuls
+        const requiredAttributes = ["p", "op", "tick", "sb", "eb", "lim", "premine"];
+        for (let attr of requiredAttributes) {
+          if (!obj.hasOwnProperty(attr) || obj[attr] === null || obj[attr] === undefined) {
+            return false;
+          }
+        }
+
+         // Vérifier l'ordre des clés
+        const objKeys = Object.keys(obj);
+        for (let i = 0; i < requiredAttributes.length; i++) {
+            if (objKeys[i] !== requiredAttributes[i]) {
+            return false;
+            }
+        }
+      
+        // Vérifier que p = "fast-20" et op = "deploy"
+        if (obj.p !== "fast-20" || obj.op !== "deploy") {
+          return false;
+        }
+      
+        // Vérifier que tick respecte le regex /^[a-zA-Z0-9]+$/
+        const tickRegex = /^[a-zA-Z0-9]+$/;
+        if (!tickRegex.test(obj.tick)) {
+          return false;
+        }
+      
+        // Vérifier que sb et eb sont des entiers > 0 et que sb > eb
+        if (!Number.isInteger(obj.sb) || obj.sb <= 0) {
+          return false;
+        }
+        if (!Number.isInteger(obj.eb) || obj.eb <= 0) {
+          return false;
+        }
+        if (obj.sb >= obj.eb) {
+          return false;
+        }
+      
+        // Vérifier que lim > 0
+        if (obj.lim <= 0) {
+          return false;
+        }
+      
+        // Vérifier que premine >= 0 et <= 5
+        if (obj.premine < 0 || obj.premine > 5) {
+          return false;
+        }
+      
+        // Toutes les vérifications ont réussi
+        return true;
+      },
+      validate_fixDeploy_Object(obj) {
+        // Vérifier que tous les attributs existent et ne sont pas nuls
+        const requiredAttributes = ["p", "op", "tick", "max", "lim", "premine"];
+        for (let attr of requiredAttributes) {
+          if (!obj.hasOwnProperty(attr) || obj[attr] === null || obj[attr] === undefined) {
+            return false;
+          }
+        }
+
+        // Vérifier l'ordre des clés
+        const objKeys = Object.keys(obj);
+        for (let i = 0; i < requiredAttributes.length; i++) {
+            if (objKeys[i] !== requiredAttributes[i]) {
+            return false;
+            }
+        }
+      
+        // Vérifier que p = "fast-20" et op = "deploy"
+        if (obj.p !== "fast-20" || obj.op !== "deploy") {
+          return false;
+        }
+      
+        // Vérifier que tick respecte le regex /^[a-zA-Z0-9]+$/
+        const tickRegex = /^[a-zA-Z0-9]+$/;
+        if (!tickRegex.test(obj.tick)) {
+          return false;
+        }
+      
+        if (!Number.isInteger(obj.max) || obj.max <= 0) {
+          return false;
+        }
+        if (!Number.isInteger(obj.lim) || obj.lim <= 0) {
+          return false;
+        }
+        if (obj.sb >= obj.eb) {
+          return false;
+        }
+      
+        // Vérifier que lim > 0
+        if (obj.lim <= 0) {
+          return false;
+        }
+      
+        // Vérifier que premine >= 0 et <= 5
+        if (obj.premine < 0 || obj.premine > 5) {
+          return false;
+        }
+
+        const I = obj.max - (obj.max * (obj.premine / 100));
+        if ( !(I % obj.lim === 0)) {
+            return false
+        }
+      
+        // Toutes les vérifications ont réussi
+        return true;
+      },
+      validate_mint_Object(obj) {
+        // Vérifier que tous les attributs existent et ne sont pas nuls
+        const requiredAttributes = ["p", "op", "tick", "amt"];
+        for (let attr of requiredAttributes) {
+          if (!obj.hasOwnProperty(attr) || obj[attr] === null || obj[attr] === undefined) {
+            return false;
+          }
+        }
+
+        // Vérifier l'ordre des clés
+        const objKeys = Object.keys(obj);
+        for (let i = 0; i < requiredAttributes.length; i++) {
+            if (objKeys[i] !== requiredAttributes[i]) {
+            return false;
+            }
+        }
+      
+        if (obj.p !== "fast-20" || obj.op !== "mint") {
+          return false;
+        }
+      
+        const tickRegex = /^[a-zA-Z0-9]+$/;
+        if (!tickRegex.test(obj.tick)) {
+          return false;
+        }
+
+        if (!Number.isInteger(obj.amt) || obj.amt <= 0) {
+            return false;
+        }
+        return true;
+      },
+      validate_transfer_Object(obj) {
+        const requiredAttributes = ["p", "op", "tick", "amt"];
+        for (let attr of requiredAttributes) {
+          if (!obj.hasOwnProperty(attr) || obj[attr] === null || obj[attr] === undefined) {
+            return false;
+          }
+        }
+
+        // Vérifier l'ordre des clés
+        const objKeys = Object.keys(obj);
+        for (let i = 0; i < requiredAttributes.length; i++) {
+            if (objKeys[i] !== requiredAttributes[i]) {
+            return false;
+            }
+        }
+      
+        if (obj.p !== "fast-20" || obj.op !== "transfer") {
+          return false;
+        }
+      
+        const tickRegex = /^[a-zA-Z0-9]+$/;
+        if (!tickRegex.test(obj.tick)) {
+          return false;
+        }
+
+        if (!Number.isInteger(obj.amt) || obj.amt <= 0) {
+            return false;
+        }
+        return true;
+      },
+      validate_burn_Object(obj) {
+        const requiredAttributes = ["p", "op", "tick", "amt"];
+        for (let attr of requiredAttributes) {
+          if (!obj.hasOwnProperty(attr) || obj[attr] === null || obj[attr] === undefined) {
+            return false;
+          }
+        }
+
+        // Vérifier l'ordre des clés
+        const objKeys = Object.keys(obj);
+        for (let i = 0; i < requiredAttributes.length; i++) {
+            if (objKeys[i] !== requiredAttributes[i]) {
+            return false;
+            }
+        }
+      
+        if (obj.p !== "fast-20" || obj.op !== "burn") {
+          return false;
+        }
+      
+        const tickRegex = /^[a-zA-Z0-9]+$/;
+        if (!tickRegex.test(obj.tick)) {
+          return false;
+        }
+
+        if (!Number.isInteger(obj.amt) || obj.amt <= 0) {
+            return false;
+        }
+        return true;
+      }
 
 }
 

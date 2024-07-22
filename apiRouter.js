@@ -47,6 +47,12 @@ exports.router = (function () {
     apiRouter.route('/memefi/deploy/update').post(deployCtrl.validate('updateDeploy'), deployCtrl.updateDeployToken);
     apiRouter.route('/memefi/deploy/claim').post(deployCtrl.validate('claim'), deployCtrl.claimDeployToken);
 
+    apiRouter.route('/memefi/fix/checkdeployToken').post(deployCtrl.validate('pre_fix_check_addToken'), deployCtrl.pre_fix_check_addToken);
+    apiRouter.route('/memefi/fair/checkdeployToken').post(deployCtrl.validate('pre_fair_check_addToken'), deployCtrl.pre_fair_check_addToken);
+
+    apiRouter.route('/memefi/fix/saveToken').post(deployCtrl.validate('save_addToken'), deployCtrl.fix_save_addToken);
+    apiRouter.route('/memefi/fair/saveToken').post(deployCtrl.validate('save_addToken'), deployCtrl.fair_save_addToken);
+
 
     /************************** Airdrop **************************/
 

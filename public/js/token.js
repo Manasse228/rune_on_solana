@@ -54,7 +54,14 @@
         const result = _result.data;
 
         if ((_result && _result.errorcode === 400) || (_result && _result.errorcode === 201)) {
-          notyf.error( _result.errorcode ? _result.errortext : result);
+          if (_result.errorcode === 400) {
+            notyf.error(_result.errortext);
+          } 
+
+          if (_result.errorcode === 201) {
+            notyf.error(result);
+          }
+          
         } else {
 
           wallet = window.solana;
@@ -142,7 +149,11 @@
   
     function getMints(tokenData) {
       if (Number(tokenData.startBlock) >0) {
-        return (Number(tokenData.max) / Number(tokenData.lim)).toLocaleString('en-US');
+        if (!tokenData.mintOver) {
+          return (Number(tokenData.remain) / Number(tokenData.lim)).toLocaleString('en-US');
+        } else {
+          return (Number(tokenData.max) / Number(tokenData.lim)).toLocaleString('en-US');
+        }
       } else {
         const r = Number(tokenData.max) - Number(tokenData.remain);
         const p = (Number(tokenData.max) * Number(tokenData.premine)) / 100;
@@ -176,7 +187,7 @@
           
           document.getElementById('totalTransfer').textContent = tokenData.transfercount;
           document.getElementById('maxsupplyid').textContent = (tokenData.max) ?  Number(tokenData.max).toLocaleString('en-US') : Number(tokenData.remain).toLocaleString('en-US');
-          document.getElementById('circulatingsupply').textContent =  (Number(tokenData.startBlock) >0) ? Number(tokenData.max).toLocaleString('en-US') : (Number(tokenData.max) - Number(tokenData.remain)).toLocaleString('en-US');
+          document.getElementById('circulatingsupply').textContent =  (Number(tokenData.startBlock) >0) ? ( (!tokenData.mintOver) ? Number(tokenData.remain).toLocaleString('en-US') : Number(tokenData.max).toLocaleString('en-US'))  : (Number(tokenData.max) - Number(tokenData.remain)).toLocaleString('en-US');
           document.getElementById('permint').textContent = (tokenData.lim) ?  Number(tokenData.lim).toLocaleString('en-US') : 0;
           document.getElementById('deploytime').textContent =  convertTimestamp(tokenData.blockTime);
           

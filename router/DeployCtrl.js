@@ -87,203 +87,267 @@ module.exports = {
             trxInfo.blocktime = blocktime;
             trxInfo.blocknumber = blocknumber;
             trxInfo.signature = txSignature;
-            trxInfo.memo = memoData || {};
+            trxInfo.memo = memoData || false;
             trxInfo.instructions = parsedInstructions;
 
             return trxInfo;
-    
-            /*return {
-                from: fromAddress || '',  // Fallback if sender is not found
-                to: (toAddress) ? toAddress : fromAddress,      // Fallback if recipient is not found
-                blocktime: blocktime,
-                blocknumber: blocknumber,
-                signature: txSignature,
-                instructions: parsedInstructions,
-                memo: memoData || {},  // Fallback if memo is not found
-            };*/
         } catch (error) {
             console.error('Error fetching transaction details:', error.message);
             return trxInfo;
         }
     },
-    pre_fix_check_addToken: async (tokenName, totalSupply, mint, premine, logo) => {
-
-        const errors = [];
-
-        if (!tokenName || !totalSupply || Number(mint) <=0 || Number(premine) <0 || !logo) {
-            errors.push("<p>The Token's name or TotalSupply or Mint value or Premine value or Logo can't be empty</p>");
-            return errors;
+    pre_fix_check_addToken: (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return Utils.getErrors(res, errors);
         } else {
-            const fix_totalSupply = Number(totalSupply);
-            const fix_mint = Number(mint);
-            const fix_premine = Number(premine);
-
-            try {
-                const result = await DeployModel.getTokenByName(tokenName);
-                if (result) {
-                    errors.push('<p>Token name already exists</p>');
-                }
-
-                const logoresult = await DeployModel.chekLogoLink(logo);
-                if (logoresult) {
-                    errors.push('<p>This logo already exists</p>');
-                }
+            Utils.checkAuthentication(req, res, jwt)
+            .then(async _user => {
+                if (_user) {
+                    const { tick, max, lim, premine, logo } = req.body;
+                    const errors = [];
+                    const fix_totalSupply = Number(max);
+                    const fix_mint = Number(lim);
+                    const fix_premine = Number(premine);
             
-                // Vérifier que la valeur de "tick" respecte le regex /^[a-zA-Z0-9]+$/
-                const tickRegex = /^[a-zA-Z0-9]+$/;
-                if (!tickRegex.test(tokenName)) {
-                    errors.push('<p>Token name must be a single word without spaces and special character</p>');
+                    const I = fix_totalSupply - (fix_totalSupply * (fix_premine / 100));
+                    if ( !(I % fix_mint === 0)) {
+                        errors.push('<p>Token creation failed: The total supply for investors must be a multiple of the mint limit. Please adjust the total supply or the mint limit.</p>');
+                    }
+                    return Utils.getJsonResponse('ok', 200, '', errors, res);
+                } else {
+                    return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
                 }
-            
-                // Vérifier que la valeur de "max" est > 0
-                if (fix_totalSupply <= 0) {
-                    errors.push('<p>Total Supply must be greater than Zero (0)</p>');
-                }
-            
-                // Vérifier que la valeur de "lim" est > 0
-                if (fix_mint <= 0) {
-                    errors.push('<p>The Mint value must be greater than Zero (0)</p>');
-                }
-            
-                // Vérifier que la valeur de "premine" est comprise entre 0 et 5
-                if (fix_premine < 0 || fix_premine > 5) {
-                    errors.push('<p>Premine must be between 0 and 5 inclusive</p>');
-                }
-        
-                const I = fix_totalSupply - (fix_totalSupply * (fix_premine / 100));
-        
-                if ( !(I % fix_mint === 0)) {
-                    errors.push('<p>Token creation failed: The total supply for investors must be a multiple of the mint limit. Please adjust the total supply or the mint limit.</p>');
-                }
-
-                return errors;
-            } catch (error) {
-                errors.push('<p>Error fetching token by name: Contact Dev</p>');
-                return errors;
-            }  
+            })
+            .catch(_ => {
+                return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+            });
         }
     },
-    pre_fair_check_addToken: async (tokenName, sb, eb, mint, premine, logo) => {
-
-        const errors = [];
-        if (!tokenName || !sb || !eb || !mint || !premine || !logo) {
-            errors.push("<p>The tokenName or Start Block or End Block or Mint value or Premine value or Logo can't be empty</p>");
-            return errors;
+    pre_fair_check_addToken: (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return Utils.getErrors(res, errors);
         } else {
-            const fix_mint = Number(mint);
-            const fix_premine = Number(premine);
-
-            try {
-                const result = await DeployModel.getTokenByName(tokenName);
-                if (result) {
-                    errors.push('<p>Token name already exists</p>');
-                }
-
-                const logoresult = await DeployModel.chekLogoLink(logo);
-                if (logoresult) {
-                    errors.push('<p>This logo already exists</p>');
-                }
-            
-                // Vérifier que la valeur de "tick" respecte le regex /^[a-zA-Z0-9]+$/
-                const tickRegex = /^[a-zA-Z0-9]+$/;
-                if (!tickRegex.test(tokenName)) {
-                    errors.push('<p>Token name must be a single word without spaces and special character</p>');
-                }
-            
-                if (Number(sb) <= 0) {
-                    errors.push('<p>Start Block must be greater than Zero (0)</p>');
-                }
-
-                if (Number(eb) <= 0) {
-                    errors.push('<p>End Block must be greater than Zero (0)</p>');
-                }
-            
-                // Vérifier que la valeur de "lim" est > 0
-                if (fix_mint <= 0) {
-                    errors.push('<p>The Mint value must be greater than Zero (0)</p>');
-                }
-            
-                if (Number(sb) === Number(eb) || Number(sb) >= Number(eb) ) {
-                    errors.push('<p>The Start Block Must must be greater than End Block</p>');
-                }
-        
-                // Vérifier que la valeur de "premine" est comprise entre 0 et 5
-                if (fix_premine < 0 || fix_premine > 5) {
-                    errors.push('<p>Premine must be between 0 and 5 inclusive</p>');
-                }
-                
-                const currentSlot = await connection.getSlot('confirmed');
-                if (Number(eb) <= currentSlot) {
-                    errors.push('<p>The End Block must be greather than current block ('+currentSlot+')</p>');
-                }
+            Utils.checkAuthentication(req, res, jwt)
+            .then(async _user => {
+                if (_user) {
+                    const { tick, sb, eb, lim, premine, logo } = req.body;
+                    const errors = [];
+                    if (Number(sb) === Number(eb) || Number(sb) >= Number(eb) ) {
+                        errors.push('<p>The Start Block Must must be greater than End Block</p>');
+                    }
                     
-                return errors;
-            } catch (error) {
-                errors.push('<p>Error fetching token by name: Contact Dev</p>');
-                return errors;
-            }
+                    const currentSlot = await connection.getSlot('confirmed');
+                    if (Number(eb) <= currentSlot) {
+                        errors.push('<p>The End Block must be greather than current block ('+currentSlot+')</p>');
+                    }
+
+                    return Utils.getJsonResponse('ok', 200, '', errors, res);
+                } else {
+                    return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                }
+            })
+            .catch(_ => {
+                return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+            });
         }
     },
-    fix_save_addToken: async (tokenName, totalSupply, mint, premine, from, to, transactionHash, blockNumber, blockTime, description, twitterlink, logo) => {
-        return new Promise((resolve, reject) => {
+    fix_save_addToken: (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return Utils.getErrors(res, errors);
+        } else {
+            Utils.checkAuthentication(req, res, jwt)
+            .then(async _user => {
+                if (_user) {
 
-            if (!tokenName || !totalSupply || !mint || !premine.toString() || !from || !to || !transactionHash || !blockNumber || !blockTime || !description || !twitterlink || !logo) {
-                console.log(tokenName, totalSupply, mint, premine, from, to, transactionHash, blockNumber, blockTime, description, twitterlink, logo)
-                resolve(false)
-            } else {
-                const deployModel = new DeployModel();
-                deployModel.blockNumber = Number(blockNumber);
-                deployModel.blockTime = Number(blockTime);
-                deployModel.transactionHash = transactionHash;
-                deployModel.from = from;
-                deployModel.to = to;
-                deployModel.name = tokenName.trim();
-                deployModel.max = Number(totalSupply);
-                deployModel.lim = Number(mint);
-                deployModel.premine = Number(premine);
-                deployModel.description = description.trim();
-                deployModel.twitterlink = twitterlink.trim();
-                deployModel.logo = logo; 
-                deployModel.remain = Number(totalSupply) - ((Number(totalSupply) * Number(premine))/100);
-                deployModel.save()
-                    .then((_) => {
-                        resolve(true)
-                    })
-                    .catch(err => {
-                        resolve(false)
-                    });
-            }
-        })
+                    const errors = [];
+                    const { transactionHash, description, twitterlink, logo } = req.body;
+                    const trxDetails = await module.exports.getTransactionDetailsAndActions(transactionHash);
+
+                    if (trxDetails !== null && trxDetails.from && trxDetails.memo) {
+
+                        const senderAddress = trxDetails.from;
+                        const toAddress = trxDetails.to;
+                        const blocktime = trxDetails.blocktime;
+                        const blocknumber = trxDetails.blocknumber;
+                        const transactionMemo = JSON.parse(trxDetails.memo);
+
+                        const tokenData = await DeployModel.getTokenByName(transactionMemo.tick);
+                        const fix_totalSupply = Number(transactionMemo.max);
+                        const fix_mint = Number(transactionMemo.lim);
+                        const fix_premine = Number(transactionMemo.premine);
+
+                        if (tokenData) {
+                            errors.push('<p>Token name already exists</p>');
+                        }
+
+                        // Vérifier que la valeur de "tick" respecte le regex /^[a-zA-Z0-9]+$/
+                        const tickRegex = /^[a-zA-Z0-9]+$/;
+                        if (!tickRegex.test(transactionMemo.tick)) {
+                            errors.push('<p>Token name must be a single word without spaces and special character</p>');
+                        }
+
+                        if (fix_totalSupply <= 0) {
+                            errors.push('<p>Total Supply must be greater than Zero (0)</p>');
+                        }
+
+                        if (fix_mint <= 0) {
+                            errors.push('<p>The Mint value must be greater than Zero (0)</p>');
+                        }
+
+                        if (fix_premine < 0 || fix_premine > 5) {
+                            errors.push('<p>Premine must be between 0 and 5 inclusive</p>');
+                        }
+
+                        const I = fix_totalSupply - (fix_totalSupply * (fix_premine / 100));
+                        if ( !(I % fix_mint === 0)) {
+                            errors.push('<p>Token creation failed: The total supply for investors must be a multiple of the mint limit. Please adjust the total supply or the mint limit.</p>');
+                        }
+
+                        if (errors.length >0) {
+                            return Utils.getJsonResponse('ok', 201, '', errors, res);
+                        } else {
+                            const deployModel = new DeployModel();
+                            deployModel.blockNumber = Number(blocknumber);
+                            deployModel.blockTime = Number(blocktime);
+                            deployModel.transactionHash = transactionHash;
+                            deployModel.from = senderAddress;
+                            deployModel.to = toAddress;
+                            deployModel.name = transactionMemo.tick;
+                            deployModel.max = fix_totalSupply;
+                            deployModel.lim = fix_mint;
+                            deployModel.premine = fix_premine;
+                            deployModel.description = description.trim();
+                            deployModel.twitterlink = twitterlink.trim();
+                            deployModel.logo = logo; 
+                            deployModel.remain = Number(fix_totalSupply) - ((Number(fix_totalSupply) * Number(fix_premine))/100);
+                            deployModel.save()
+                                .then((_) => {
+                                    return Utils.getJsonResponse('ok', 200, '', errors, res);
+                                })
+                                .catch(err => {
+                                    return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.1</p>'], res);
+                                });    
+                        }
+                    } else {
+                        return Utils.getJsonResponse('ok', 201, '', '<p>Your blockchain transaction is not valid.</p>', res);
+                    }
+                } else {
+                    return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.2</p>'], res);
+                }
+            })
+            .catch(_ => {
+                console.log(_)
+                return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.3</p>'], res);
+            });
+        }
     },
-    fair_save_addToken: async (tokenName, sb, eb, mint, premine, from, to, transactionHash, blockNumber, blockTime, description, twitterlink, logo) => {
-        return new Promise((resolve, reject) => {
+    fair_save_addToken: (req, res) => {
 
-            if (!tokenName || !sb || !eb || !mint || !premine || !from || !to || !transactionHash || !blockNumber || !blockTime || !description || !twitterlink || !logo) {
-                resolve(false)
-            } else {
-                const deployModel = new DeployModel();
-                deployModel.blockNumber = Number(blockNumber);
-                deployModel.blockTime = Number(blockTime);
-                deployModel.transactionHash = transactionHash;
-                deployModel.from = from;
-                deployModel.to = to;
-                deployModel.name = tokenName;
-                deployModel.startBlock = Number(sb);
-                deployModel.endBlock = Number(eb);
-                deployModel.lim = Number(mint);
-                deployModel.premine = Number(premine);
-                deployModel.description = description;
-                deployModel.twitterlink = twitterlink;
-                deployModel.logo = logo; 
-                deployModel.save()
-                    .then((_) => {
-                        resolve(true)
-                    })
-                    .catch(err => {
-                        resolve(false)
-                    });
-            }
-        })
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return Utils.getErrors(res, errors);
+        } else {
+            Utils.checkAuthentication(req, res, jwt)
+            .then(async _user => {
+                if (_user) {
+                    const errors = [];
+                    const { transactionHash, description, twitterlink, logo } = req.body;
+                    const trxDetails = await module.exports.getTransactionDetailsAndActions(transactionHash);
+
+                    if (trxDetails !== null && trxDetails.from && trxDetails.memo) {
+
+                        const senderAddress = trxDetails.from;
+                        const toAddress = trxDetails.to;
+                        const blocktime = trxDetails.blocktime;
+                        const blocknumber = trxDetails.blocknumber;
+                        const transactionMemo = JSON.parse(trxDetails.memo);
+
+                        const tokenData = await DeployModel.getTokenByName(transactionMemo.tick);
+                        const sb = Number(transactionMemo.sb);
+                        const eb = Number(transactionMemo.eb);
+                        const fair_mint = Number(transactionMemo.lim);
+                        const fair_premine = Number(transactionMemo.premine);
+
+                        if (tokenData) {
+                            errors.push('<p>Token name already exists</p>');
+                        }
+        
+                        const logoresult = await DeployModel.chekLogoLink(logo);
+                        if (logoresult) {
+                            errors.push('<p>This logo already exists</p>');
+                        }
+                    
+                        const tickRegex = /^[a-zA-Z0-9]+$/;
+                        if (!tickRegex.test(transactionMemo.tick)) {
+                            errors.push('<p>Token name must be a single word without spaces and special character</p>');
+                        }
+                    
+                        if (Number(sb) <= 0) {
+                            errors.push('<p>Start Block must be greater than Zero (0)</p>');
+                        }
+        
+                        if (Number(eb) <= 0) {
+                            errors.push('<p>End Block must be greater than Zero (0)</p>');
+                        }
+                    
+                        // Vérifier que la valeur de "lim" est > 0
+                        if (fair_mint <= 0) {
+                            errors.push('<p>The Mint value must be greater than Zero (0)</p>');
+                        }
+                    
+                        if (Number(sb) === Number(eb) || Number(sb) >= Number(eb) ) {
+                            errors.push('<p>The Start Block Must must be greater than End Block</p>');
+                        }
+                
+                        // Vérifier que la valeur de "premine" est comprise entre 0 et 5
+                        if (fair_premine < 0 || fair_premine > 5) {
+                            errors.push('<p>Premine must be between 0 and 5 inclusive</p>');
+                        }
+                        
+                        const currentSlot = await connection.getSlot('confirmed');
+                        if (Number(eb) <= currentSlot) {
+                            errors.push('<p>The End Block must be greather than current block ('+currentSlot+')</p>');
+                        }
+
+                        if (errors.length >0) {
+                            return Utils.getJsonResponse('ok', 201, '', errors, res);
+                        } else {
+                            const deployModel = new DeployModel();
+                            deployModel.blockNumber = Number(blocknumber);
+                            deployModel.blockTime = Number(blocktime);
+                            deployModel.transactionHash = transactionHash;
+                            deployModel.from = senderAddress;
+                            deployModel.to = toAddress;
+                            deployModel.name = transactionMemo.tick;
+                            deployModel.startBlock = Number(sb);
+                            deployModel.endBlock = Number(eb);
+                            deployModel.lim = Number(fair_mint);
+                            deployModel.premine = Number(fair_premine);
+                            deployModel.description = description.trim();
+                            deployModel.twitterlink = twitterlink.trim();
+                            deployModel.logo = logo; 
+                            deployModel.save()
+                                .then((_) => {
+                                    return Utils.getJsonResponse('ok', 200, '', errors, res);
+                                })
+                                .catch(err => {
+                                    return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                                });
+                        }
+                    } else {
+                        return Utils.getJsonResponse('ok', 201, '', '<p>Your blockchain transaction is not valid.</p>', res);
+                    }
+                } else {
+                    return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                }
+            })
+            .catch(_ => {
+                return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+            });
+        }
     },
     calculateFixProgress: (deploy) => {
         const i = (deploy.remain / deploy.max) * 100;
@@ -434,7 +498,13 @@ module.exports = {
                         const transactionMemo = JSON.parse(trxDetails.memo);
                         const premineAmount = Number((tokenInfo.max * tokenInfo.premine)/100);
 
-                        if ((Number(blocknumber) > Number(tokenInfo.blockNumber)) && (tokenInfo.to === fromDetails) && (tokenInfo.name === transactionMemo.tick) && Number(transactionMemo.amount) == premineAmount) {
+                        if (
+                            (Number(blocknumber) > Number(tokenInfo.blockNumber)) && 
+                            (tokenInfo.to === fromDetails) && 
+                            (tokenInfo.name === transactionMemo.tick) && 
+                            Number(transactionMemo.amount) == premineAmount &&
+                            Object.keys(trxDetails.memo).length > 0
+                        ) {
                             
                             const session = await DeployModel.startSession();
                             try {
@@ -510,7 +580,7 @@ module.exports.validate = (method) => {
             return [
                 body('tokenName', "<p>tokenName parameter does not exist</p>").exists(),
                 body('tokenName', "<p>tokenName parameter must not be empty</p>").trim().not().isEmpty(),
-                body('tokenName', "<p>Your project don't exist</p>").trim().custom(value => {
+                body('tokenName', "<p>Token name already exists</p>").trim().custom(value => {
                     return new Promise(async (resolve, reject) => {
                         const tokenInfo = await DeployModel.findOne({ name: value}).lean();
                         if (tokenInfo) {
@@ -561,8 +631,200 @@ module.exports.validate = (method) => {
                 check('from', "<p>from parameter must not be empty</p>").trim().not().isEmpty(),
             ]
         }
+        case 'pre_fix_check_addToken': { //   const { , , , ,  } = req.body;
+            return [
+                body('tick', "<p>tick parameter does not exist</p>").exists(),
+                body('tick', "<p>tick parameter must not be empty</p>").trim().not().isEmpty(),
+                body('tick', "<p>Project's name already exist</p>").trim().custom(value => {
+                    return new Promise(async (resolve, reject) => {
+                        const tokenInfo = await DeployModel.findOne({ name: value}).lean();
+                        if (tokenInfo) {
+                            return reject();
+                        } else {
+                            return resolve();
+                        }
+                    })
+                }),
+                body('tick', "<p>Token name must be a single word without spaces and special character</p>").trim().custom(value => {
+                    return new Promise(async (resolve, reject) => {
+                        const tickRegex = /^[a-zA-Z0-9]+$/;                        
+                        if (!tickRegex.test(value)) {
+                            return reject();
+                        } else {
+                            return resolve();
+                        }
+                    })
+                }),
+
+                body('logo', "<p>logo parameter does not exist</p>").exists(),
+                body('logo', "<p>logo parameter must not be empty</p>").trim().not().isEmpty(),
+                body('logo', "<p>This logo already exists</p>").trim().custom(value => {
+                    return new Promise(async (resolve, reject) => {
+                        const tokenInfo = await DeployModel.findOne({ logo: value}).lean();
+                        if (tokenInfo) {
+                            return reject();
+                        } else {
+                            return resolve();
+                        }
+                    })
+                }),
+
+                body('max', "<p>The max parameter does not exist</p>").exists(),
+                body('max', "<p>The max must not be empty</p>").trim().not().isEmpty(),
+                body('max', "<p>The max must be a number</p>").trim().isInt(),
+                body('max', "<p>Total Supply must be greater than Zero (0)</p>").trim().custom(value => {
+                    return new Promise((resolve, reject) => {
+                        if (value && value >= 1) {
+                            return resolve();
+                        } else {
+                            return reject();
+                        }
+                    })
+                }),
+
+                body('lim', "<p>The lim parameter does not exist</p>").exists(),
+                body('lim', "<p>The lim must not be empty</p>").trim().not().isEmpty(),
+                body('lim', "<p>The lim must be a number</p>").trim().isInt(),
+                body('lim', "<p>The Mint value must be greater than Zero (0)</p>").trim().custom(value => {
+                    return new Promise((resolve, reject) => {
+                        if (value && value >= 1) {
+                            return resolve();
+                        } else {
+                            return reject();
+                        }
+                    })
+                }),
+
+                body('premine', "<p>The premine parameter does not exist</p>").exists(),
+                body('premine', "<p>The premine must not be empty</p>").trim().not().isEmpty(),
+                body('premine', "<p>The premine must be a number</p>").trim().isInt(),
+                body('premine', "<p>Premine must be between 0 and 5 inclusive</p>").trim().custom(value => {
+                    return new Promise((resolve, reject) => {
+                        if (value && (value <0 || value >5)) {
+                            return reject();
+                        } else {
+                            return resolve();
+                        }
+                    })
+                }),
+            ]
+        }
+        case 'pre_fair_check_addToken': { //   const {, , , } = req.body;
+            return [
+                body('tick', "<p>tick parameter does not exist</p>").exists(),
+                body('tick', "<p>tick parameter must not be empty</p>").trim().not().isEmpty(),
+                body('tick', "<p>Project's name already exist</p>").trim().custom(value => {
+                    return new Promise(async (resolve, reject) => {
+                        const tokenInfo = await DeployModel.findOne({ name: value}).lean();
+                        if (tokenInfo) {
+                            return reject();
+                        } else {
+                            return resolve();
+                        }
+                    })
+                }),
+                body('tick', "<p>Token name must be a single word without spaces and special character</p>").trim().custom(value => {
+                    return new Promise(async (resolve, reject) => {
+                        const tickRegex = /^[a-zA-Z0-9]+$/;                        
+                        if (!tickRegex.test(value)) {
+                            return reject();
+                        } else {
+                            return resolve();
+                        }
+                    })
+                }),
+
+
+                body('lim', "<p>The lim parameter does not exist</p>").exists(),
+                body('lim', "<p>The lim must not be empty</p>").trim().not().isEmpty(),
+                body('lim', "<p>The lim must be a number</p>").trim().isInt(),
+                body('lim', "<p>The Mint value must be greater than Zero (0)</p>").trim().custom(value => {
+                    return new Promise((resolve, reject) => {
+                        if (value && value >= 1) {
+                            return resolve();
+                        } else {
+                            return reject();
+                        }
+                    })
+                }),
+
+                body('premine', "<p>The premine parameter does not exist</p>").exists(),
+                body('premine', "<p>The premine must not be empty</p>").trim().not().isEmpty(),
+                body('premine', "<p>The premine must be a number</p>").trim().isInt(),
+                body('premine', "<p>Premine must be between 0 and 5 inclusive</p>").trim().custom(value => {
+                    return new Promise((resolve, reject) => {
+                        if (value && (value <0 || value >5)) {
+                            return reject();
+                        } else {
+                            return resolve();
+                        }
+                    })
+                }),
+
+                body('logo', "<p>logo parameter does not exist</p>").exists(),
+                body('logo', "<p>logo parameter must not be empty</p>").trim().not().isEmpty(),
+                body('logo', "<p>This logo already exists</p>").trim().custom(value => {
+                    return new Promise(async (resolve, reject) => {
+                        const tokenInfo = await DeployModel.findOne({ logo: value}).lean();
+                        if (tokenInfo) {
+                            return reject();
+                        } else {
+                            return resolve();
+                        }
+                    })
+                }),
+
+                body('sb', "<p>The sb parameter does not exist</p>").exists(),
+                body('sb', "<p>The sb must not be empty</p>").trim().not().isEmpty(),
+                body('sb', "<p>The sb must be a number</p>").trim().isInt(),
+                body('sb', "<p>Start Block must be greater than Zero (0)</p>").trim().custom(value => {
+                    return new Promise((resolve, reject) => {
+                        if (value && value >= 1) {
+                            return resolve();
+                        } else {
+                            return reject();
+                        }
+                    })
+                }),
+
+                body('eb', "<p>The lim parameter does not exist</p>").exists(),
+                body('eb', "<p>The lim must not be empty</p>").trim().not().isEmpty(),
+                body('eb', "<p>The lim must be a number</p>").trim().isInt(),
+                body('eb', "<p>End Block must be greater than Zero (0)</p>").trim().custom(value => {
+                    return new Promise((resolve, reject) => {
+                        if (value && value >= 1) {
+                            return resolve();
+                        } else {
+                            return reject();
+                        }
+                    })
+                }),
+
+
+
+            ]
+        }
+        case 'save_addToken': { 
+            return [
+                body('logo', "<p>logo parameter does not exist</p>").exists(),
+                body('logo', "<p>logo parameter must not be empty</p>").trim().not().isEmpty(),
+                body('logo', "<p>This logo already exists</p>").trim().custom(value => {
+                    return new Promise(async (resolve, reject) => {
+                        const tokenInfo = await DeployModel.findOne({ logo: value}).lean();
+                        if (tokenInfo) {
+                            return reject();
+                        } else {
+                            return resolve();
+                        }
+                    })
+                }),
+                body('transactionHash', "<p>transactionHash parameter does not exist</p>").exists(),
+                body('transactionHash', "<p>Don't forget to put your transaction's hash</p>").trim().not().isEmpty(),
+            ]
+        }
         default : {
 
         }
     }
 }
+

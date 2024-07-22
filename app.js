@@ -128,59 +128,6 @@ app.get('/api/statistic', async (req, res) => {
 
 
 
-
-/************************** Deploy **************************/
-
-app.post('/api/fair/checkdeployToken', async (req, res) => {
-  const { tick, sb, eb, lim, premine, logo } = req.body;
-  try {
-    const result = await DeployCtrl.pre_fair_check_addToken(tick, sb, eb, lim, premine, logo)
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-app.post('/api/fix/saveToken', async (req, res) => {
-  const { tick, max, lim, premine, from, to, transactionHash, blockNumber, blockTime, description, twitterlink, logo } = req.body;
-  try {
-    DeployCtrl.fix_save_addToken(tick, max, lim, premine, from, to, transactionHash, blockNumber, blockTime, description, twitterlink, logo)
-    .then( _ => {
-      res.json(_);
-    }).catch( _ => {
-      res.json(_);
-    })
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-app.post('/api/fair/saveToken', async (req, res) => {
-  const { tick, sb, eb, lim, premine, from, to, transactionHash, blockNumber, blockTime, description, twitterlink, logo } = req.body;
-  try {
-    DeployCtrl.fair_save_addToken(tick, sb, eb, lim, premine, from, to, transactionHash, blockNumber, blockTime, description, twitterlink, logo )
-    .then( _ => {
-      res.json(_);
-    }).catch( _ => {
-      res.json(_);
-    })
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-app.post('/api/fix/checkdeployToken', async (req, res) => {
-  const { tick, max, lim, premine, logo } = req.body;
-  try {
-    const result = await DeployCtrl.pre_fix_check_addToken(tick, max, lim, premine, logo);
-
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-
 /************************** Mint **************************/
 
 

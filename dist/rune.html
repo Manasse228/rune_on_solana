@@ -1,68 +1,73 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trade Page</title><link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"><style>body {
-            background-color: #111;
-            color: #fff;
-        }
-        .card {
-            background-color: #222;
-            border: none;
-            margin-bottom: 20px;
-        }
-        .card .btn {
-            background-color: #d9534f;
-            border: none;
-        }
-        .card .btn:hover {
-            background-color: #c9302c;
-        }
-        .card-header {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Crypto Trading Interface</title><link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet"><style>body {
+      background-color: #0f0f0f;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    .container-fluid {
+      padding: 20px;
+    }
+    .navbar, .footer {
+      background-color: #1a1a1a;
+      padding: 10px 20px;
+    }
+    .navbar-brand, .footer {
+      color: #fff;
+    }
+    .card {
+      background-color: #1a1a1a;
+      border: none;
+      border-radius: 10px;
+    }
+    .card-header {
+      background-color: #1a1a1a;
+      border-bottom: 1px solid #333;
+    }
+    .table {
+      color: #fff;
+    }
+    .table th, .table td {
+      border-top: none;
+    }
+    .btn-custom, .btn-custom:focus, .btn-custom:hover {
+      background-color: #ff007f;
+      border: none;
+      color: #fff;
+    }
+    .btn-selected {
+      background-color: #ff007f;
+      border: none;
+      color: #fff;
+    }
+    .btn-default, .btn-default:focus, .btn-default:hover {
+      background-color: transparent;
+      border: none;
+      color: #fff;
+    }
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+    .active-row {
+      background-color: rgba(255, 0, 127, 0.2);
+    }</style><script defer="defer" src="rune.bundle.js"></script></head><body><nav class="navbar navbar-expand-lg"><a class="navbar-brand" href="#">Crypto Trade</a></nav><div class="container-fluid"><div class="row"><div class="col-md-8"><div class="card"><div class="card-header"><h5>IN•ELON•MUSK•WE•TRUST Rune #89555</h5><p>1.55 sats/🚀 $0.0014</p></div><div class="card-body"><div class="chart-container"><canvas id="chart"></canvas></div></div><div class="card-footer"><div class="d-flex justify-content-between"><div>Volume (7d): 1.0789 BTC</div><div>Market Cap: 2.77 BTC</div><div>Supply: 178.76M</div><div>Trades (7d): 2293</div><div>Pending Buys: 0</div></div></div></div></div><div class="col-md-4"><div class="card"><div class="card-header"><ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist"><li class="nav-item"><a class="nav-link active" id="buy-tab" data-toggle="tab" href="#buy" role="tab" aria-controls="buy" aria-selected="true">Buy</a></li><li class="nav-item"><a class="nav-link" id="sell-tab" data-toggle="tab" href="#sell" role="tab" aria-controls="sell" aria-selected="false">Sell</a></li><li class="nav-item"><a class="nav-link" id="swap-tab" data-toggle="tab" href="#swap" role="tab" aria-controls="swap" aria-selected="false">Swap</a></li></ul></div><div class="card-body tab-content" id="myTabContent"><div class="tab-pane fade show active" id="buy" role="tabpanel" aria-labelledby="buy-tab"><table class="table"><thead><tr><th>Quantity</th><th>Price (sats/🚀)</th><th>Total (BTC)</th></tr></thead><tbody><tr class="active-row"><td>60,165</td><td>1.550004</td><td>0.000933</td></tr><tr class="active-row"><td>60,165</td><td>1.550004</td><td>0.000933</td></tr><tr class="active-row"><td>18,718</td><td>1.550005</td><td>0.000029</td></tr></tbody></table><button class="btn btn-custom btn-block">Buy 172,473</button></div><div class="tab-pane fade" id="sell" role="tabpanel" aria-labelledby="sell-tab"><table class="table"><thead><tr><th>Quantity</th><th>Price (sats/🚀)</th><th>Total (BTC)</th></tr></thead><tbody><tr><td>33,425</td><td>1.550004</td><td>0.000518</td></tr></tbody></table><button class="btn btn-custom btn-block">List 33,425</button></div><div class="tab-pane fade" id="swap" role="tabpanel" aria-labelledby="swap-tab"><p>Swap functionality coming soon!</p></div></div></div></div></div></div><footer class="footer text-center"><p>&copy; 2024 Crypto Trade</p></footer><script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script><script src="https://cdn.jsdelivr.net/npm/chart.js"></script><script>// Chart.js setup
+    var ctx = document.getElementById('chart').getContext('2d');
+    var chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00'],
+        datasets: [{
+          label: 'Price',
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          borderColor: '#ff007f',
+          data: [1.1, 1.2, 1.4, 1.3, 1.6, 1.7, 1.5, 1.6, 1.55, 1.65]
+        }]
+      },
+      options: {}
+    });
 
-        .card-body .amount {
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .card-body .price {
-            color: #d9534f;
-            font-weight: bold;
-            text-align: center;
-        }
-        .card-body .usd-price {
-            font-size: 0.9rem;
-            color: #aaa;
-            text-align: center;
-        }
-        .navbar, .nav-link {
-            background-color: #222;
-            color: #fff;
-        }
-        .navbar-brand {
-            color: #fff;
-        }
-        .navbar-brand:hover, .nav-link:hover {
-            color: #c9302c;
-        }
-
-        .content-row {
-            background-color: #222;
-            color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-        }
-        .content-row img {
-            width: 25px;
-            height: 25px;
-            margin-right: 8px;
-        }
-        .logo-price {
-            width: 25px;
-            height: 25px;
-            margin-right: 8px;
-        }
-        .content-row .price-text {
-            margin-left: auto;
-        }</style><script defer="defer" src="rune.bundle.js"></script></head><body><nav class="navbar navbar-expand-lg navbar-dark"><a class="navbar-brand" href="#">Trade</a><div class="collapse navbar-collapse"><ul class="navbar-nav ml-auto"><li class="nav-item"><a class="nav-link" href="#">Activities</a></li><li class="nav-item"><a class="nav-link" href="#">My</a></li></ul></div></nav><div class="container mt-4"><h2>Buy asct</h2><p>Listings: 251</p><div class="row"><div class="col-md-4"><div class="card"><div class="card-header">Rune</div><div class="card-body"><h3 class="amount">5000</h3><div class="container mt-3"><div class="content-row"><img class="logo-price" src="asset/Solana_logo.png" alt="icon"> <span class="price">0.0002 / asct</span></div></div><p class="usd-price">$ 0.0078</p><div class="container mt-4"><div class="content-row"><img src="asset/pngwing.com.png" alt="icon"> <span>0.58</span> <span class="price-text">$ 164.4218</span></div></div><button class="btn btn-danger btn-block">Buy</button></div></div></div><div class="col-md-4"><div class="card"><div class="card-header">10,000</div><div class="card-body"><p class="price">0.0003 / asct</p><p class="usd-price">$ 0.0081</p><p>3 - $ 81.162</p><button class="btn btn-danger btn-block">Buy</button></div></div></div><div class="col-md-4"><div class="card"><div class="card-header">4,000</div><div class="card-body"><p class="price">0.0003 / asct</p><p class="usd-price">$ 0.0102</p><p>1.52 - $ 41.122</p><button class="btn btn-danger btn-block">Buy</button></div></div></div><div class="col-md-4"><div class="card"><div class="card-header">14,000</div><div class="card-body"><p class="price">0.0003 / asct</p><p class="usd-price">$ 0.0102</p><p>5.32 - $ 143.9272</p><button class="btn btn-danger btn-block">Buy</button></div></div></div><div class="col-md-4"><div class="card"><div class="card-header">12,000</div><div class="card-body"><p class="price">0.0003 / asct</p><p class="usd-price">$ 0.0102</p><p>4.56 - $ 123.3662</p><button class="btn btn-danger btn-block">Buy</button></div></div></div><div class="col-md-4"><div class="card"><div class="card-header">1,000</div><div class="card-body"><p class="price">0.0004 / asct</p><p class="usd-price">$ 0.0108</p><p>0.4 - $ 10.8216</p><button class="btn btn-danger btn-block">Buy</button></div></div></div><div class="col-md-4"><div class="card"><div class="card-header">20,000</div><div class="card-body"><p class="price">0.0004 / asct</p><p class="usd-price">$ 0.0108</p><p>8 - $ 216.432</p><button class="btn btn-danger btn-block">Buy</button></div></div></div><div class="col-md-4"><div class="card"><div class="card-header">18,000</div><div class="card-body"><p class="price">0.0005 / asct</p><p class="usd-price">$ 0.0151</p><p>10.08 - $ 272.7043</p><button class="btn btn-danger btn-block">Buy</button></div></div></div><div class="col-md-4"><div class="card"><div class="card-header">300</div><div class="card-body"><p class="price">0.003 / asct</p><p class="usd-price">$ 0.0811</p><p>0.9 - $ 24.3486</p><button class="btn btn-danger btn-block">Buy</button></div></div></div></div></div><script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script></body></html>
+    // Script to toggle active row
+    $(document).ready(function() {
+      $('table tbody tr').click(function() {
+        $(this).toggleClass('active-row');
+      });
+    });</script></body></html>

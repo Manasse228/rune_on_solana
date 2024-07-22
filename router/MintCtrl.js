@@ -118,7 +118,7 @@ module.exports = {
                     const trxDetails = await module.exports.getTransactionDetailsAndActions(signature);
                     const currentSlot = await connection.getSlot('confirmed');
                     
-                    if (!tokenData.mintOver && trxDetails !== null && trxDetails.from) {
+                    if (!tokenData.mintOver && trxDetails !== null && trxDetails.from && Object.keys(trxDetails.memo).length > 0) {
         
                         const fromDetails = trxDetails.from;
                         const to = trxDetails.to;

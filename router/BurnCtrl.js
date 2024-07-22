@@ -140,7 +140,7 @@ module.exports = {
                     const { signature, from } = req.body;
                     const trxDetails = await module.exports.getTransactionDetailsAndActions(signature);
 
-                    if (trxDetails !== null && trxDetails.from) {
+                    if (trxDetails !== null && trxDetails.from && Object.keys(trxDetails.memo).length > 0) {
 
                         const senderAddress = trxDetails.from;
                         const toAddress = trxDetails.to;
