@@ -373,11 +373,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const fix_mint = Number(document.getElementById("fix_mint").value);
             const fix_premine = Number(document.getElementById("fix_premine").value);
 
-            const I = fix_totalSupply - (fix_totalSupply * (fix_premine / 100));
-            if ( !(I % fix_mint === 0)) {
-                errorNotification.innerHTML = `<p>Token creation failed: The total supply for investors must be a multiple of the mint limit. Please adjust the total supply or the mint limit.</p>`;
-                errorNotification.style.display = 'block';
-            } else {
                 errorNotification.style.display = 'none';
 
                 const dataObject = {
@@ -421,7 +416,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                   dataToSave.logo = checkData.logo;
                   handleDeployClick(data, dataToSave, errorNotification);
                 } 
-            }
+            
         } else {
 
             const fair_blockStart = Number(document.getElementById("fair_blockStart").value);
@@ -429,55 +424,52 @@ document.addEventListener('DOMContentLoaded', async () => {
             const fair_mint = Number(document.getElementById("fair_mint").value);
             const fair_premine = Number(document.getElementById("fair_premine").value);
 
-            if ( fair_blockStart >= fair_blockEnd) {
-                errorNotification.innerHTML = `<p>Token creation failed: The Block End must be greater than Block Start</p>`;
-                errorNotification.style.display = 'block';
-            } else {
-                errorNotification.style.display = 'none';
 
-                const dataObject = {
-                    p: "fast-20",
-                    op: "deploy",
-                    tick: document.getElementById("fair_tokenName").value.trim(),
-                    sb: fair_blockStart,
-                    eb: fair_blockEnd,
-                    lim: fair_mint,
-                    premine: fair_premine
-                };
-                const data = `data:,${JSON.stringify(dataObject)}`;
+            errorNotification.style.display = 'none';
 
-                const checkData = dataObject;
-                checkData.logo = document.getElementById("fair_image").value;
-                const response = await fetch('/memefi/fair/checkdeployToken', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `${process.env.JWT_TOKEN}`
-                  },
-                  body: JSON.stringify(checkData),
-                });
-                const _saveResult = await response.json();
-                const saveResult = _saveResult.data;
+            const dataObject = {
+                p: "fast-20",
+                op: "deploy",
+                tick: document.getElementById("fair_tokenName").value.trim(),
+                sb: fair_blockStart,
+                eb: fair_blockEnd,
+                lim: fair_mint,
+                premine: fair_premine
+            };
+            const data = `data:,${JSON.stringify(dataObject)}`;
 
-                if (_saveResult && _saveResult.errorcode === 400) {
-                  notyf.error(_saveResult.errortext);
-                  errorNotification.innerHTML = _saveResult.errortext;
-                  errorNotification.style.display = 'block'
-                }
+            const checkData = dataObject;
+            checkData.logo = document.getElementById("fair_image").value;
+            const response = await fetch('/memefi/fair/checkdeployToken', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `${process.env.JWT_TOKEN}`
+              },
+              body: JSON.stringify(checkData),
+            });
+            const _saveResult = await response.json();
+            const saveResult = _saveResult.data;
 
-                if ( (_saveResult && _saveResult.errorcode === 500) || (saveResult && saveResult.length > 0) ) {
-                  errorNotification.innerHTML = saveResult.join('');
-                  errorNotification.style.display = 'block';
-                }
-
-                if ((_saveResult && _saveResult.errorcode === 200) && saveResult && saveResult.length === 0) {
-                  const dataToSave = dataObject;
-                  dataToSave.description = document.getElementById("fair_tokenDescription").value;
-                  dataToSave.twitterlink = document.getElementById("fair_twitter").value;
-                  dataToSave.logo = checkData.logo;
-                  handleDeployClick(data, dataToSave, errorNotification);
-                } 
+            if (_saveResult && _saveResult.errorcode === 400) {
+              notyf.error(_saveResult.errortext);
+              errorNotification.innerHTML = _saveResult.errortext;
+              errorNotification.style.display = 'block'
             }
+
+            if ( (_saveResult && _saveResult.errorcode === 500) || (saveResult && saveResult.length > 0) ) {
+              errorNotification.innerHTML = saveResult.join('');
+              errorNotification.style.display = 'block';
+            }
+
+            if ((_saveResult && _saveResult.errorcode === 200) && saveResult && saveResult.length === 0) {
+              const dataToSave = dataObject;
+              dataToSave.description = document.getElementById("fair_tokenDescription").value;
+              dataToSave.twitterlink = document.getElementById("fair_twitter").value;
+              dataToSave.logo = checkData.logo;
+              handleDeployClick(data, dataToSave, errorNotification);
+            } 
+            
         }
       }
 

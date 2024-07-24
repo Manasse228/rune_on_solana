@@ -112,7 +112,7 @@ module.exports = {
             
                     const I = fix_totalSupply - (fix_totalSupply * (fix_premine / 100));
                     if ( !(I % fix_mint === 0)) {
-                        errors.push('Token creation failed because the total supply for investors must be a multiple of the mint limit. Please adjust the total supply or the mint limit.');
+                        errors.push('<p>Token creation failed because the total supply for investors must be a multiple of the mint limit. Please adjust the total supply or the mint limit.</p>');
                     }
                     return Utils.getJsonResponse('ok', 200, '', errors, res);
                 } else {
