@@ -1,73 +1,17 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Crypto Trading Interface</title><link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet"><style>body {
-      background-color: #0f0f0f;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
-    .container-fluid {
-      padding: 20px;
-    }
-    .navbar, .footer {
-      background-color: #1a1a1a;
-      padding: 10px 20px;
-    }
-    .navbar-brand, .footer {
-      color: #fff;
-    }
-    .card {
-      background-color: #1a1a1a;
-      border: none;
-      border-radius: 10px;
-    }
-    .card-header {
-      background-color: #1a1a1a;
-      border-bottom: 1px solid #333;
-    }
-    .table {
-      color: #fff;
-    }
-    .table th, .table td {
-      border-top: none;
-    }
-    .btn-custom, .btn-custom:focus, .btn-custom:hover {
-      background-color: #ff007f;
-      border: none;
-      color: #fff;
-    }
-    .btn-selected {
-      background-color: #ff007f;
-      border: none;
-      color: #fff;
-    }
-    .btn-default, .btn-default:focus, .btn-default:hover {
-      background-color: transparent;
-      border: none;
-      color: #fff;
-    }
-    .chart-container {
-      height: 300px;
-      position: relative;
-    }
-    .active-row {
-      background-color: rgba(255, 0, 127, 0.2);
-    }</style><script defer="defer" src="rune.bundle.js"></script></head><body><nav class="navbar navbar-expand-lg"><a class="navbar-brand" href="#">Crypto Trade</a></nav><div class="container-fluid"><div class="row"><div class="col-md-8"><div class="card"><div class="card-header"><h5>IN•ELON•MUSK•WE•TRUST Rune #89555</h5><p>1.55 sats/🚀 $0.0014</p></div><div class="card-body"><div class="chart-container"><canvas id="chart"></canvas></div></div><div class="card-footer"><div class="d-flex justify-content-between"><div>Volume (7d): 1.0789 BTC</div><div>Market Cap: 2.77 BTC</div><div>Supply: 178.76M</div><div>Trades (7d): 2293</div><div>Pending Buys: 0</div></div></div></div></div><div class="col-md-4"><div class="card"><div class="card-header"><ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist"><li class="nav-item"><a class="nav-link active" id="buy-tab" data-toggle="tab" href="#buy" role="tab" aria-controls="buy" aria-selected="true">Buy</a></li><li class="nav-item"><a class="nav-link" id="sell-tab" data-toggle="tab" href="#sell" role="tab" aria-controls="sell" aria-selected="false">Sell</a></li><li class="nav-item"><a class="nav-link" id="swap-tab" data-toggle="tab" href="#swap" role="tab" aria-controls="swap" aria-selected="false">Swap</a></li></ul></div><div class="card-body tab-content" id="myTabContent"><div class="tab-pane fade show active" id="buy" role="tabpanel" aria-labelledby="buy-tab"><table class="table"><thead><tr><th>Quantity</th><th>Price (sats/🚀)</th><th>Total (BTC)</th></tr></thead><tbody><tr class="active-row"><td>60,165</td><td>1.550004</td><td>0.000933</td></tr><tr class="active-row"><td>60,165</td><td>1.550004</td><td>0.000933</td></tr><tr class="active-row"><td>18,718</td><td>1.550005</td><td>0.000029</td></tr></tbody></table><button class="btn btn-custom btn-block">Buy 172,473</button></div><div class="tab-pane fade" id="sell" role="tabpanel" aria-labelledby="sell-tab"><table class="table"><thead><tr><th>Quantity</th><th>Price (sats/🚀)</th><th>Total (BTC)</th></tr></thead><tbody><tr><td>33,425</td><td>1.550004</td><td>0.000518</td></tr></tbody></table><button class="btn btn-custom btn-block">List 33,425</button></div><div class="tab-pane fade" id="swap" role="tabpanel" aria-labelledby="swap-tab"><p>Swap functionality coming soon!</p></div></div></div></div></div></div><footer class="footer text-center"><p>&copy; 2024 Crypto Trade</p></footer><script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script><script src="https://cdn.jsdelivr.net/npm/chart.js"></script><script>// Chart.js setup
-    var ctx = document.getElementById('chart').getContext('2d');
-    var chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00'],
-        datasets: [{
-          label: 'Price',
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          borderColor: '#ff007f',
-          data: [1.1, 1.2, 1.4, 1.3, 1.6, 1.7, 1.5, 1.6, 1.55, 1.65]
-        }]
-      },
-      options: {}
-    });
-
-    // Script to toggle active row
-    $(document).ready(function() {
-      $('table tbody tr').click(function() {
-        $(this).toggleClass('active-row');
-      });
-    });</script></body></html>
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Solana Wallet Adapter Example</title><link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"><style>.wallet-info {
+          margin-top: 20px;
+      }
+      .wallet-address, .wallet-balance {
+          word-break: break-all;
+      }
+      .wallet-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 10px;
+          height: 50px; /* Adjust height as needed */
+      }
+      .wallet-button img {
+          height: 24px;
+          margin-right: 10px;
+      }</style><script defer="defer" src="rune.bundle.js"></script></head><body><div class="container"><h1 class="mt-5">Solana Wallet Adapter Example</h1><button id="connect-button" class="btn btn-primary mt-3" data-toggle="modal" data-target="#walletModal">Connect Wallet</button><div id="wallet-info" class="wallet-info mt-4"></div></div><div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="walletModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="walletModalLabel">Select a Wallet</h5><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><button id="connect-phantom" class="btn btn-secondary btn-block wallet-button"><img id="phantom_icon" alt="Phantom Logo"> Phantom</button> <button id="connect-solflare" class="btn btn-secondary btn-block wallet-button"><img id="solflare_icon" alt="Solflare Logo"> Solflare</button> <button id="connect-ledger" class="btn btn-secondary btn-block wallet-button"><img id="ledger_icon" alt="Ledger Logo"> Ledger</button> <button id="connect-torus" class="btn btn-secondary btn-block wallet-button"><img id="torus_icon" alt="Torus Logo"> Torus</button> <button id="connect-walletConnect" class="btn btn-secondary btn-block wallet-button"><img id="walletConnect_icon" alt="WalletConnect Logo"> WalletConnect</button></div></div></div></div><script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script><script src="rune.bundle.js"></script></body></html>

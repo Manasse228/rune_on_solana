@@ -19,6 +19,7 @@ exports.router = (function () {
 
     /************************** Token Info **************************/
     apiRouter.route('/memefi/token/info').get(tokenCtrl.validate('tokenName'), tokenCtrl.getTokenInfo);
+    apiRouter.route('/memefi/token/statistic').get(mintCtrl.getStatistic);
 
 
     /************************** User Balance **************************/
@@ -30,6 +31,10 @@ exports.router = (function () {
     apiRouter.route('/memefi/mint/available').get(tokenCtrl.validate('tokenName'), tokenCtrl.mintAvailable);
     apiRouter.route('/memefi/mint/save').post(mintCtrl.validate('mintSave'), mintCtrl.saveMint);
     apiRouter.route('/memefi/mymints').get(mintCtrl.validate('holderAddress'), mintCtrl.getMintByHolder);
+
+    apiRouter.route('/memefi/mint/upcoming').get(tokenCtrl.getUpComingMint);
+    apiRouter.route('/memefi/mint/ongoing').get(tokenCtrl.getOnGoingMint);
+    apiRouter.route('/memefi/mint/passed').get(tokenCtrl.getPassedMint);
 
 
     /************************** Burn **************************/
@@ -55,6 +60,7 @@ exports.router = (function () {
 
 
     /************************** Airdrop **************************/
+    
 
     return apiRouter;
 })();

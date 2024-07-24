@@ -210,13 +210,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const confirmedTransaction = await WaitForConfirmations(connexion, signature);
 
-        // from, to, transactionHash, blockNumber, blockTime, description, twitterlink, logo
-        /*dataToSave.from = publicKey.toString();
-        dataToSave.to = publicKey.toString();
-        dataToSave.transactionHash = signature;
-        dataToSave.blockNumber = confirmedTransaction.slot;
-        dataToSave.blockTime = confirmedTransaction.blockTime;*/
-
         const dataObject = {
           transactionHash: signature,
           description: dataToSave.description,
@@ -291,7 +284,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (input.value.trim() === '') {
               input.classList.add('is-invalid');
               errorMessage.style.display = 'block';
-              //errorNotification.innerHTML += `<p>${field.message}</p>`;
               isValid = false;
             } else {
                 if (input.id === "fix_tokenName" && !(/^[a-zA-Z0-9]+$/.test(input.value.trim()))) {
@@ -373,7 +365,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }  
 
       if (!isValid) {
-        //errorNotification.style.display = 'block';
+
       } else {
 
         if (selectedType === 'fixCap') {
@@ -417,12 +409,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                   errorNotification.style.display = 'block'
                 }
 
-                if (saveResult && saveResult.length > 0) {
+                if ( (_saveResult && _saveResult.errorcode === 500) || (saveResult && saveResult.length > 0) ) {
                   errorNotification.innerHTML = saveResult.join('');
                   errorNotification.style.display = 'block';
                 }
 
-                if (saveResult && saveResult.length === 0) {
+                if ((_saveResult && _saveResult.errorcode === 200) && saveResult && saveResult.length === 0) {
                   const dataToSave = dataObject;
                   dataToSave.description = document.getElementById("fix_tokenDescription").value;
                   dataToSave.twitterlink = document.getElementById("fix_twitter").value;
@@ -473,12 +465,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                   errorNotification.style.display = 'block'
                 }
 
-                if (saveResult && saveResult.length > 0) {
+                if ( (_saveResult && _saveResult.errorcode === 500) || (saveResult && saveResult.length > 0) ) {
                   errorNotification.innerHTML = saveResult.join('');
                   errorNotification.style.display = 'block';
                 }
 
-                if (saveResult && saveResult.length === 0) {
+                if ((_saveResult && _saveResult.errorcode === 200) && saveResult && saveResult.length === 0) {
                   const dataToSave = dataObject;
                   dataToSave.description = document.getElementById("fair_tokenDescription").value;
                   dataToSave.twitterlink = document.getElementById("fair_twitter").value;
@@ -489,8 +481,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       }
 
-
-      // https://assets.pancakeswap.finance/web/phishing-warning/phishing-warning-bunny-1.png
   });
 
   

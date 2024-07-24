@@ -27,20 +27,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
   let $table = $('#table');
-  let selections = [];
-
-  function getIdSelections() {
-    return $.map($table.bootstrapTable('getSelections'), function (row) {
-        return row.id;
-    });
-  }
-
-  function responseHandler(res) {
-    $.each(res.rows, function (i, row) {
-        row.state = $.inArray(row.id, selections) !== -1;
-    });
-    return res;
-  }
 
   function formatEnglish(value, row, index) {
     return value ? value.toLocaleString('en-US') : 0;
@@ -69,7 +55,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function hashLink(value, row, index) {
-    return '<a href=https://solscan.io/tx/' + value + ' target="_blank">View</a>';
+    const blockNumber = row.blockNumber ? row.blockNumber.toLocaleString('en-US') : 0;
+    return '<a href=https://solscan.io/tx/' + value + ' target="_blank">' + blockNumber + '</a>';
   }
 
 
@@ -120,8 +107,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         ]
     });
 
-    $table.on('all.bs.table', function (e, name, args) {
-    });
 }
 
   $(function () {

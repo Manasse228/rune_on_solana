@@ -112,15 +112,15 @@ module.exports = {
             
                     const I = fix_totalSupply - (fix_totalSupply * (fix_premine / 100));
                     if ( !(I % fix_mint === 0)) {
-                        errors.push('<p>Token creation failed: The total supply for investors must be a multiple of the mint limit. Please adjust the total supply or the mint limit.</p>');
+                        errors.push('Token creation failed because the total supply for investors must be a multiple of the mint limit. Please adjust the total supply or the mint limit.');
                     }
                     return Utils.getJsonResponse('ok', 200, '', errors, res);
                 } else {
-                    return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                    return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
                 }
             })
             .catch(_ => {
-                return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
             });
         }
     },
@@ -145,11 +145,11 @@ module.exports = {
 
                     return Utils.getJsonResponse('ok', 200, '', errors, res);
                 } else {
-                    return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                    return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
                 }
             })
             .catch(_ => {
-                return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
             });
         }
     },
@@ -228,19 +228,19 @@ module.exports = {
                                     return Utils.getJsonResponse('ok', 200, '', errors, res);
                                 })
                                 .catch(err => {
-                                    return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.1</p>'], res);
+                                    return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
                                 });    
                         }
                     } else {
-                        return Utils.getJsonResponse('ok', 201, '', '<p>Your blockchain transaction is not valid.</p>', res);
+                        return Utils.getJsonResponse('ok', 201, '', 'Your blockchain transaction is not valid.', res);
                     }
                 } else {
-                    return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.2</p>'], res);
+                    return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
                 }
             })
             .catch(_ => {
                 console.log(_)
-                return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.3</p>'], res);
+                return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
             });
         }
     },
@@ -631,11 +631,11 @@ module.exports.validate = (method) => {
                 check('from', "<p>from parameter must not be empty</p>").trim().not().isEmpty(),
             ]
         }
-        case 'pre_fix_check_addToken': { //   const { , , , ,  } = req.body;
+        case 'pre_fix_check_addToken': { 
             return [
-                body('tick', "<p>tick parameter does not exist</p>").exists(),
-                body('tick', "<p>tick parameter must not be empty</p>").trim().not().isEmpty(),
-                body('tick', "<p>Project's name already exist</p>").trim().custom(value => {
+                body('tick', "tick parameter does not exist").exists(),
+                body('tick', "tick parameter must not be empty").trim().not().isEmpty(),
+                body('tick', "Project's name already exist").trim().custom(value => {
                     return new Promise(async (resolve, reject) => {
                         const tokenInfo = await DeployModel.findOne({ name: value}).lean();
                         if (tokenInfo) {
@@ -645,7 +645,7 @@ module.exports.validate = (method) => {
                         }
                     })
                 }),
-                body('tick', "<p>Token name must be a single word without spaces and special character</p>").trim().custom(value => {
+                body('tick', "Token name must be a single word without spaces and special character").trim().custom(value => {
                     return new Promise(async (resolve, reject) => {
                         const tickRegex = /^[a-zA-Z0-9]+$/;                        
                         if (!tickRegex.test(value)) {
@@ -656,9 +656,9 @@ module.exports.validate = (method) => {
                     })
                 }),
 
-                body('logo', "<p>logo parameter does not exist</p>").exists(),
-                body('logo', "<p>logo parameter must not be empty</p>").trim().not().isEmpty(),
-                body('logo', "<p>This logo already exists</p>").trim().custom(value => {
+                body('logo', "logo parameter does not exist").exists(),
+                body('logo', "logo parameter must not be empty").trim().not().isEmpty(),
+                body('logo', "This logo already exists").trim().custom(value => {
                     return new Promise(async (resolve, reject) => {
                         const tokenInfo = await DeployModel.findOne({ logo: value}).lean();
                         if (tokenInfo) {
@@ -669,10 +669,10 @@ module.exports.validate = (method) => {
                     })
                 }),
 
-                body('max', "<p>The max parameter does not exist</p>").exists(),
-                body('max', "<p>The max must not be empty</p>").trim().not().isEmpty(),
-                body('max', "<p>The max must be a number</p>").trim().isInt(),
-                body('max', "<p>Total Supply must be greater than Zero (0)</p>").trim().custom(value => {
+                body('max', "The max parameter does not exist").exists(),
+                body('max', "The max must not be empty").trim().not().isEmpty(),
+                body('max', "The max must be a number").trim().isInt(),
+                body('max', "Total Supply must be greater than Zero (0)").trim().custom(value => {
                     return new Promise((resolve, reject) => {
                         if (value && value >= 1) {
                             return resolve();
@@ -682,10 +682,10 @@ module.exports.validate = (method) => {
                     })
                 }),
 
-                body('lim', "<p>The lim parameter does not exist</p>").exists(),
-                body('lim', "<p>The lim must not be empty</p>").trim().not().isEmpty(),
-                body('lim', "<p>The lim must be a number</p>").trim().isInt(),
-                body('lim', "<p>The Mint value must be greater than Zero (0)</p>").trim().custom(value => {
+                body('lim', "The lim parameter does not exist").exists(),
+                body('lim', "The lim must not be empty").trim().not().isEmpty(),
+                body('lim', "The lim must be a number").trim().isInt(),
+                body('lim', "The Mint value must be greater than Zero (0)").trim().custom(value => {
                     return new Promise((resolve, reject) => {
                         if (value && value >= 1) {
                             return resolve();
@@ -695,10 +695,10 @@ module.exports.validate = (method) => {
                     })
                 }),
 
-                body('premine', "<p>The premine parameter does not exist</p>").exists(),
-                body('premine', "<p>The premine must not be empty</p>").trim().not().isEmpty(),
-                body('premine', "<p>The premine must be a number</p>").trim().isInt(),
-                body('premine', "<p>Premine must be between 0 and 5 inclusive</p>").trim().custom(value => {
+                body('premine', "The premine parameter does not exist<").exists(),
+                body('premine', "The premine must not be empty").trim().not().isEmpty(),
+                body('premine', "The premine must be a number").trim().isInt(),
+                body('premine', "Premine must be between 0 and 5 inclusive").trim().custom(value => {
                     return new Promise((resolve, reject) => {
                         if (value && (value <0 || value >5)) {
                             return reject();
@@ -709,11 +709,11 @@ module.exports.validate = (method) => {
                 }),
             ]
         }
-        case 'pre_fair_check_addToken': { //   const {, , , } = req.body;
+        case 'pre_fair_check_addToken': { 
             return [
-                body('tick', "<p>tick parameter does not exist</p>").exists(),
-                body('tick', "<p>tick parameter must not be empty</p>").trim().not().isEmpty(),
-                body('tick', "<p>Project's name already exist</p>").trim().custom(value => {
+                body('tick', "tick parameter does not exist").exists(),
+                body('tick', "tick parameter must not be empty").trim().not().isEmpty(),
+                body('tick', "Project's name already exist").trim().custom(value => {
                     return new Promise(async (resolve, reject) => {
                         const tokenInfo = await DeployModel.findOne({ name: value}).lean();
                         if (tokenInfo) {
@@ -723,7 +723,7 @@ module.exports.validate = (method) => {
                         }
                     })
                 }),
-                body('tick', "<p>Token name must be a single word without spaces and special character</p>").trim().custom(value => {
+                body('tick', "Token name must be a single word without spaces and special character<").trim().custom(value => {
                     return new Promise(async (resolve, reject) => {
                         const tickRegex = /^[a-zA-Z0-9]+$/;                        
                         if (!tickRegex.test(value)) {
@@ -735,10 +735,10 @@ module.exports.validate = (method) => {
                 }),
 
 
-                body('lim', "<p>The lim parameter does not exist</p>").exists(),
-                body('lim', "<p>The lim must not be empty</p>").trim().not().isEmpty(),
-                body('lim', "<p>The lim must be a number</p>").trim().isInt(),
-                body('lim', "<p>The Mint value must be greater than Zero (0)</p>").trim().custom(value => {
+                body('lim', "The lim parameter does not exist").exists(),
+                body('lim', "The lim must not be empty").trim().not().isEmpty(),
+                body('lim', "The lim must be a number").trim().isInt(),
+                body('lim', "The Mint value must be greater than Zero (0)").trim().custom(value => {
                     return new Promise((resolve, reject) => {
                         if (value && value >= 1) {
                             return resolve();
@@ -748,10 +748,10 @@ module.exports.validate = (method) => {
                     })
                 }),
 
-                body('premine', "<p>The premine parameter does not exist</p>").exists(),
-                body('premine', "<p>The premine must not be empty</p>").trim().not().isEmpty(),
-                body('premine', "<p>The premine must be a number</p>").trim().isInt(),
-                body('premine', "<p>Premine must be between 0 and 5 inclusive</p>").trim().custom(value => {
+                body('premine', "The premine parameter does not exist").exists(),
+                body('premine', "The premine must not be empty").trim().not().isEmpty(),
+                body('premine', "The premine must be a number").trim().isInt(),
+                body('premine', "Premine must be between 0 and 5 inclusive").trim().custom(value => {
                     return new Promise((resolve, reject) => {
                         if (value && (value <0 || value >5)) {
                             return reject();
@@ -761,9 +761,9 @@ module.exports.validate = (method) => {
                     })
                 }),
 
-                body('logo', "<p>logo parameter does not exist</p>").exists(),
-                body('logo', "<p>logo parameter must not be empty</p>").trim().not().isEmpty(),
-                body('logo', "<p>This logo already exists</p>").trim().custom(value => {
+                body('logo', "logo parameter does not exist").exists(),
+                body('logo', "logo parameter must not be empty").trim().not().isEmpty(),
+                body('logo', "This logo already exists").trim().custom(value => {
                     return new Promise(async (resolve, reject) => {
                         const tokenInfo = await DeployModel.findOne({ logo: value}).lean();
                         if (tokenInfo) {
@@ -774,10 +774,10 @@ module.exports.validate = (method) => {
                     })
                 }),
 
-                body('sb', "<p>The sb parameter does not exist</p>").exists(),
-                body('sb', "<p>The sb must not be empty</p>").trim().not().isEmpty(),
-                body('sb', "<p>The sb must be a number</p>").trim().isInt(),
-                body('sb', "<p>Start Block must be greater than Zero (0)</p>").trim().custom(value => {
+                body('sb', "The sb parameter does not exist").exists(),
+                body('sb', "The sb must not be empty").trim().not().isEmpty(),
+                body('sb', "The sb must be a number").trim().isInt(),
+                body('sb', "Start Block must be greater than Zero (0)").trim().custom(value => {
                     return new Promise((resolve, reject) => {
                         if (value && value >= 1) {
                             return resolve();
@@ -787,10 +787,10 @@ module.exports.validate = (method) => {
                     })
                 }),
 
-                body('eb', "<p>The lim parameter does not exist</p>").exists(),
-                body('eb', "<p>The lim must not be empty</p>").trim().not().isEmpty(),
-                body('eb', "<p>The lim must be a number</p>").trim().isInt(),
-                body('eb', "<p>End Block must be greater than Zero (0)</p>").trim().custom(value => {
+                body('eb', "The lim parameter does not exist").exists(),
+                body('eb', "The lim must not be empty").trim().not().isEmpty(),
+                body('eb', "The lim must be a number").trim().isInt(),
+                body('eb', "End Block must be greater than Zero (0)").trim().custom(value => {
                     return new Promise((resolve, reject) => {
                         if (value && value >= 1) {
                             return resolve();
@@ -806,9 +806,9 @@ module.exports.validate = (method) => {
         }
         case 'save_addToken': { 
             return [
-                body('logo', "<p>logo parameter does not exist</p>").exists(),
-                body('logo', "<p>logo parameter must not be empty</p>").trim().not().isEmpty(),
-                body('logo', "<p>This logo already exists</p>").trim().custom(value => {
+                body('logo', "logo parameter does not exist").exists(),
+                body('logo', "logo parameter must not be empty").trim().not().isEmpty(),
+                body('logo', "This logo already exists").trim().custom(value => {
                     return new Promise(async (resolve, reject) => {
                         const tokenInfo = await DeployModel.findOne({ logo: value}).lean();
                         if (tokenInfo) {
@@ -818,8 +818,8 @@ module.exports.validate = (method) => {
                         }
                     })
                 }),
-                body('transactionHash', "<p>transactionHash parameter does not exist</p>").exists(),
-                body('transactionHash', "<p>Don't forget to put your transaction's hash</p>").trim().not().isEmpty(),
+                body('transactionHash', "transactionHash parameter does not exist").exists(),
+                body('transactionHash', "Don't forget to put your transaction's hash").trim().not().isEmpty(),
             ]
         }
         default : {

@@ -309,21 +309,38 @@ module.exports = {
                 });
             }
     },
-    getStatistique: async () => {
-        return new Promise(async (resolve, reject) => {
-
-            const countMint = await MintModel.countDocuments();
-            const countProject = await DeployModel.countDocuments();
-            const countTransfer = await TransferModel.countDocuments();
-            const countSol = 0.0003 * countMint;
-            
-            resolve({
-                countMint : countMint,
-                countProject : countProject,
-                countTransfer : countTransfer,
-                countSol : countSol,
+    getStatistic: (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return Utils.getErrors(res, errors);
+        } else {
+            Utils.checkAuthentication(req, res, jwt)
+            .then(async _user => {
+                if (_user) {
+                        const countMint = await MintModel.countDocuments();
+                        const countProject = await DeployModel.countDocuments();
+                        const countTransfer = await TransferModel.countDocuments();
+                        const countSol = 0.0003 * countMint;
+                        
+                        const data = {
+                            countMint : countMint,
+                            countProject : countProject,
+                            countTransfer : countTransfer,
+                            countSol : countSol,
+                        };
+                    return Utils.getJsonResponse('ok', 200, '', data, res);
+                } else {
+                    return Utils.getJsonResponse('error', 200, '', 'The Solana blockchain is congested. Please try again later.', res);
+                }
             })
-        })
+            .catch(_ => {
+                return Utils.getJsonResponse('error', 200, '', 'The Solana blockchain is congested. Please try again later.', res);
+            });
+        }
+      
+
+
+    
     }
 
 }

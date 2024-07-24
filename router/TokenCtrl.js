@@ -154,21 +154,34 @@ module.exports = {
         const currentSlot = await connection.getSlot('confirmed');
         return currentSlot;
     },
-    getUpComingMint: async () => {
-        return new Promise(async (resolve, reject) => {
-            module.exports.getCurrentSlot()
-            .then(async currentSlot => {
-                let result = await DeployModel.getUpComingMint(currentSlot);
-                if (result) {
-                    resolve(result)
+    getUpComingMint: (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return Utils.getErrors(res, errors);
+        } else {
+            Utils.checkAuthentication(req, res, jwt)
+            .then(async _user => {
+                if (_user) {
+                    module.exports.getCurrentSlot()
+                    .then(async currentSlot => {
+                        let result = await DeployModel.getUpComingMint(currentSlot);
+                        if (result) {
+                            return Utils.getJsonResponse('ok', 200, '', result, res);
+                        } else {
+                            return Utils.getJsonResponse('ok', 200, '', {}, res);
+                        }
+                    })
+                    .catch(_ => {
+                        return Utils.getJsonResponse('error', 401, '', {}, res);
+                    });
                 } else {
-                    resolve({})
+                    return Utils.getJsonResponse('error', 500, '', 'The Solana blockchain is congested. Please try again later.', res);
                 }
             })
             .catch(_ => {
-                resolve({})
+                return Utils.getJsonResponse('error', 500, '', 'The Solana blockchain is congested. Please try again later.', res);
             });
-        })
+        }
     },
     getMints: (deploy) => {
         if (Number(deploy.startBlock) > 0) {
@@ -184,94 +197,120 @@ module.exports = {
         const i = (deploy.remain / deploy.max) * 100;
         return 100 - i;
     },
-    getOnGoingMint: async () => {
-        return new Promise(async (resolve, reject) => {
-            module.exports.getCurrentSlot()
-            .then(async currentBlock => {
-                try {
-                    let results = await DeployModel.find({
-                        $or: [
-                            { $and: [{ startBlock: { $lte: currentBlock } }, { endBlock: { $gte: currentBlock } }] },
-                            { remain: { $gt: 0 } }
-                        ]
-                    }).sort({ blockNumber: -1 }).lean();
-        
-                    let response = await Promise.all(results.map(async (deploy) => {
-                        const holdersCount = await UserBalanceModel.countDocuments({ tokenName: deploy.name });
-        
-                        return {
-                            logo: deploy.logo,
-                            name: deploy.name,
-                            max: deploy.max,
-                            mints: module.exports.getMints(deploy),
-                            holders: holdersCount,
-                            premine: deploy.premine,
-                            blockTime: deploy.blockTime,
-                            progress: (Number(deploy.startBlock) >0) ? module.exports.calculateMintProgress(deploy.startBlock, deploy.endBlock, currentBlock).toFixed(2) : module.exports.calculateFixProgress(deploy)
-                        };
-                    }));
-        
-                    resolve(response);
-                } catch (error) {
-                    console.error(error);
-                    resolve({});
+    getOnGoingMint: (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return Utils.getErrors(res, errors);
+        } else {
+            Utils.checkAuthentication(req, res, jwt)
+            .then(async _user => {
+                if (_user) {
+                    try {
+                    module.exports.getCurrentSlot()
+                    .then(async currentBlock => {
+                        let results = await DeployModel.find({
+                            $or: [
+                                { $and: [{ startBlock: { $lte: currentBlock } }, { endBlock: { $gte: currentBlock } }] },
+                                { remain: { $gt: 0 } }
+                            ]
+                        }).sort({ blockNumber: -1 }).lean();
+            
+                        let response = await Promise.all(results.map(async (deploy) => {
+                            const holdersCount = await UserBalanceModel.countDocuments({ tokenName: deploy.name });
+            
+                            return {
+                                logo: deploy.logo,
+                                name: deploy.name,
+                                max: deploy.max,
+                                mints: module.exports.getMints(deploy),
+                                lim: deploy.lim,
+                                holders: holdersCount,
+                                premine: deploy.premine,
+                                blockTime: deploy.blockTime,
+                                progress: (Number(deploy.startBlock) >0) ? module.exports.calculateMintProgress(deploy.startBlock, deploy.endBlock, currentBlock).toFixed(2) : module.exports.calculateFixProgress(deploy)
+                            };
+                        }));
+
+                        return Utils.getJsonResponse('ok', 200, '', response, res);
+                    })
+                    .catch(_ => {
+                        return Utils.getJsonResponse('error', 401, '', {}, res);
+                    });
+
+                    } catch (error) {
+                        console.error(error);
+                        return Utils.getJsonResponse('error', 401, '', {}, res);
+                    }
+                } else {
+                    return Utils.getJsonResponse('error', 500, '', 'The Solana blockchain is congested. Please try again later.', res);
                 }
             })
             .catch(_ => {
-                resolve({})
+                return Utils.getJsonResponse('error', 500, '', 'The Solana blockchain is congested. Please try again later.', res);
             });
-        })
+        }
     },
-    getPassedMint: async () => {
-        return new Promise(async (resolve, reject) => {
-            module.exports.getCurrentSlot()
-            .then(async currentBlock => {
-
-                try {
-                    let results = await DeployModel.find({
-                        $or: [
-                            {
-                                $and: [
-                                    { endBlock: { $lt: currentBlock } },
-                                    { startBlock: { $gt: 0 } },
-                                    { endBlock: { $gt: 0 } }
+    getPassedMint: (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return Utils.getErrors(res, errors);
+        } else {
+            Utils.checkAuthentication(req, res, jwt)
+            .then(async _user => {
+                if (_user) {
+                    module.exports.getCurrentSlot()
+                    .then(async currentBlock => {
+                        try {
+                            let results = await DeployModel.find({
+                                $or: [
+                                    {
+                                        $and: [
+                                            { endBlock: { $lt: currentBlock } },
+                                            { startBlock: { $gt: 0 } },
+                                            { endBlock: { $gt: 0 } }
+                                        ]
+                                    },
+                                    {
+                                        $and: [
+                                            { remain: { $lte: 0 } },
+                                            { startBlock: { $lte: 0 } },
+                                            { endBlock: { $lte: 0 } }
+                                        ]
+                                    }
                                 ]
-                            },
-                            {
-                                $and: [
-                                    { remain: { $lte: 0 } },
-                                    { startBlock: { $lte: 0 } },
-                                    { endBlock: { $lte: 0 } }
-                                ]
-                            }
-                        ]
-                    }).sort({ blockNumber: -1 }).lean();
-        
-                    let response = await Promise.all(results.map(async (deploy) => {
-                        const holdersCount = await UserBalanceModel.countDocuments({ tokenName: deploy.name });
-        
-                        return {
-                            logo: deploy.logo,
-                            name: deploy.name,
-                            max: deploy.max,
-                            mints: module.exports.getMints(deploy),
-                            holders: holdersCount,
-                            premine: deploy.premine
-                        };
-                    }));
-        
-                    resolve(response);
-                } catch (error) {
-                    console.error(error);
-                    resolve({});
+                            }).sort({ blockNumber: -1 }).lean();
+                
+                            let response = await Promise.all(results.map(async (deploy) => {
+                                const holdersCount = await UserBalanceModel.countDocuments({ tokenName: deploy.name });
+                
+                                return {
+                                    logo: deploy.logo,
+                                    name: deploy.name,
+                                    max: deploy.max,
+                                    mints: module.exports.getMints(deploy),
+                                    lim: deploy.lim,
+                                    holders: holdersCount,
+                                    premine: deploy.premine
+                                };
+                            }));
+                
+                            return Utils.getJsonResponse('ok', 200, '', response, res);
+                        } catch (error) {
+                            return Utils.getJsonResponse('error', 401, '', {}, res);
+                        }
+                    })
+                    .catch(_ => {
+                        return Utils.getJsonResponse('error', 401, '', {}, res);
+                    });
+                } else {
+                    return Utils.getJsonResponse('error', 500, '', 'The Solana blockchain is congested. Please try again later.', res);
                 }
             })
             .catch(_ => {
-                resolve({})
+                return Utils.getJsonResponse('error', 500, '', 'The Solana blockchain is congested. Please try again later.', res);
             });
-        })  
+        }
     }
-
 }
 
 module.exports.validate = (method) => {

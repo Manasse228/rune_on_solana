@@ -42,12 +42,18 @@
       width: 100%; /* Make table take full width */
       height: auto; /* Adjust height automatically */
     }
+
+    @media (max-width: 768px) {
+            .table-responsive {
+                margin-bottom: 15px;
+            }
+    }
   </style>
   
 </head>
 <body>
 
-  <div class='dashboard'>
+  <div class='dashboard '>
     
     <div class="dashboard-nav">
         <header>
@@ -101,13 +107,14 @@
         </header>
         
         <div class='dashboard-content pagecontents'>
-            <div class=' '>
+            <div class='table-responsive'>
                 <div class='card pagecontents'>
                     <div class='card-header'>
                         <h1>My transfers transaction</h1>
                     </div>
                     <div class='card-body'>
-                       
+
+                   
                           <table
                             id="table"
                             class=""
