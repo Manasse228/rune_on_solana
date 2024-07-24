@@ -54,6 +54,7 @@
         padding: 20px;
         text-align: center;
         background-color: #fff;
+        margin-bottom: 20px; /* Add margin for better spacing */
     }
     .info-card h5 {
         color: #6c757d;
@@ -76,6 +77,18 @@
       border-radius: 25px;
     }
 
+    /* Responsive adjustments */
+    @media (max-width: 767px) {
+      .dashboard-nav {
+        display: none;
+      }
+      .dashboard-app {
+        width: 100%;
+      }
+      .info-card {
+        margin-bottom: 15px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -144,28 +157,28 @@
 
                           <div class="container mt-5">
                               <div class="row">
-                                  <div class="col-md-3">
+                                  <div class="col-md-3 col-6">
                                       <div class="info-card">
                                           <h5>MINTS</h5>
                                           <div class="value" id="countMint">1,2 M</div>
                                           <div class="change">↑ 20%</div>
                                       </div>
                                   </div>
-                                  <div class="col-md-3">
+                                  <div class="col-md-3 col-6">
                                       <div class="info-card">
                                           <h5>TRANSFERS</h5>
                                           <div class="value" id="countTransfer">750K</div>
                                           <div class="change negative">↓ 5%</div>
                                       </div>
                                   </div>
-                                  <div class="col-md-3">
+                                  <div class="col-md-3 col-6">
                                       <div class="info-card">
                                           <h5>PROJECTS</h5>
                                           <div class="value" id="countProject">85</div>
                                           <div class="change">↑ 20%</div>
                                       </div>
                                   </div>
-                                  <div class="col-md-3">
+                                  <div class="col-md-3 col-6">
                                       <div class="info-card">
                                           <h5>FUNDS</h5>
                                           <div class="value" id="countFund">899 Sol</div>
