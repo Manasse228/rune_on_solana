@@ -173,8 +173,8 @@ module.exports = {
                                                 },*/
                                                 mintOver: true,
                                                 max: (tokenData.remain + Number(transactionMemo.amt)),
-                                                remain: 0
-                                            }
+                                                remain: 0,
+                                                completedTime: Date.now()                                            }
                                         }
                                     };
                                 } else {
@@ -202,7 +202,8 @@ module.exports = {
                                                 $inc: {
                                                     remain: -Number(transactionMemo.amt),
                                                 },
-                                                mintOver: true
+                                                mintOver: true,
+                                                completedTime: Date.now()
                                             }
                                         }
                                     };

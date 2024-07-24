@@ -25,6 +25,7 @@ exports.router = (function () {
     /************************** User Balance **************************/
     apiRouter.route('/memefi/holders').get(userBalanceCtrl.validate('tokenName'), userBalanceCtrl.getHoldersList);
     apiRouter.route('/memefi/myasset').get(userBalanceCtrl.validate('holderAddress'), userBalanceCtrl.myAsset);
+    apiRouter.route('/memefi/assets').get(userBalanceCtrl.validate('assets'), userBalanceCtrl.explorer);
 
 
     /************************** Mint **************************/

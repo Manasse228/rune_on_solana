@@ -18,7 +18,8 @@ module.exports = {
     mymints: './public/js/mymints.js',
     mytransfer: './public/js/mytransfer.js',
     myburn: './public/js/myburn.js',
-    rune: './public/js/rune.js',
+    rune: './public/js/rune.js', 
+    explorer: './public/js/explorer.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -113,7 +114,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/myburn.html',
       filename: 'myburn.html',
-      chunks: ['myburn'],
+      chunks: ['myburn'], 
+    }),
+    new HtmlWebpackPlugin({
+      template: './public/explorer.html',
+      filename: 'explorer.html',
+      chunks: ['explorer'], 
     }),
   ],
   devServer: {

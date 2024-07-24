@@ -1,5 +1,6 @@
 const UserBalanceModel = require('../models/UserBalance');
 const DeployModel = require('../models/Deploy');
+const MintModel = require('../models/Mint');
 const Utils = require("../config/Utils");
 const {check, body, validationResult} = require('express-validator');
 const jwt = require("jsonwebtoken");
@@ -82,6 +83,57 @@ module.exports = {
                 return Utils.getJsonResponse('error', 400, '', {}, res);
             });
         }
+    },
+    explorer: async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return Utils.getErrors(res, errors);
+        } else {
+            let {holderAddress, page = 1 } = req.query;
+
+            const limit = 20;
+            // Find all tokens associated with the holder's address
+            let userBalances = await UserBalanceModel.find({ address: holderAddress.trim() }).lean();
+
+            // Get unique token names from userBalances
+            let tokenNames = [...new Set(userBalances.map(balance => balance.tokenName))];
+
+            // Fetch deploy information for each token name
+            let tokens = await DeployModel.find({ name: { $in: tokenNames } }).lean();
+
+            // Map the tokens to include name, logo, balance, and number of mints
+            let response = await Promise.all(tokens.map(async (token) => {
+                let balanceEntry = userBalances.find(balance => balance.tokenName === token.name);
+                
+                // Count the number of mints for this holder address and token
+                let mintCount = await MintModel.countDocuments({ to: holderAddress, tokenName: token.name });
+
+                return {
+                    name: token.name,
+                    logo: token.logo,
+                    mintStatus: token.mintOver,
+                    balance: balanceEntry ? balanceEntry.balance : 0,
+                    mintCount: mintCount,
+                    price: Math.floor(Math.random() * (250 - 1 + 1)) + 1,
+                };
+            }));
+
+            // Calculate total pages
+            const totalPages = Math.ceil(response.length / limit);
+
+            // Check if the requested page exists
+            if (page > totalPages) {
+                console.log({ message: 'Page not found', totalPages: totalPages });
+                return Utils.getJsonResponse('ok', 200, '', {result : {}, totalPages: totalPages}, res); 
+            } else {
+                // Apply pagination
+                const startIndex = (page - 1) * limit;
+                const endIndex = startIndex + limit;
+                const paginatedResult = response.slice(startIndex, endIndex);
+
+                return Utils.getJsonResponse('ok', 200, '', {result : paginatedResult, totalPages: totalPages}, res);   
+            }
+        }
     }
     
 
@@ -109,7 +161,26 @@ module.exports.validate = (method) => {
         case 'holderAddress': {
             return [
                 check('holderAddress', "holderAddress parameter does not exist").exists(),
-                check('holderAddress', "holderAddress parameter must not be empty").trim().not().isEmpty()
+                check('holderAddress', "holderAddress parameter must not be empty").trim().not().isEmpty(),
+            ]
+        }
+        case 'assets': {
+            return [
+                check('holderAddress', "holderAddress parameter does not exist").exists(),
+                check('holderAddress', "holderAddress parameter must not be empty").trim().not().isEmpty(),
+
+                check('page', "The page parameter does not exist").exists(),
+                check('page', "The page must not be empty").trim().not().isEmpty(),
+                check('page', "The page must be a number").trim().isInt(),
+                check('page', "The page must be greater than 0").trim().custom(value => {
+                    return new Promise((resolve, reject) => {
+                        if (value && value >= 1) {
+                            return resolve();
+                        } else {
+                            return reject();
+                        }
+                    })
+                }),
             ]
         }
         default : {

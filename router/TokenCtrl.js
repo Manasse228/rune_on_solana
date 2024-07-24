@@ -12,7 +12,7 @@ const connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-b
 
 module.exports = {
 
-    updateFairDeploy: async () => {
+    close_fairmint: async () => {
         const currentSlot = await connection.getSlot('confirmed');
         cron.schedule('* * * * *', async () => {
             try {
@@ -27,6 +27,7 @@ module.exports = {
                     deploy.max = deploy.remain;
                     deploy.remain = 0;
                     deploy.mintOver = true;
+                    deploy.completedTime = Date.now()
         
                     await deploy.save();
                 }
@@ -74,7 +75,7 @@ module.exports = {
         
                                         await DeployModel.updateMany(
                                             {name: tokenName },
-                                            { $set: { mintOver: true, max: result.remain, remain: 0 } }
+                                            { $set: { mintOver: true, max: result.remain, remain: 0, completedTime: Date.now() } }
                                         );
 
                                         return Utils.getJsonResponse('ok', 201, '', 'Minting of this token is closed.', res);

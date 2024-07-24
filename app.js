@@ -2,19 +2,12 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoConf = require('./config/mongoDB');
-const DeployCtrl = require('./router/DeployCtrl');
-const TokenCtrl = require('./router/TokenCtrl');
-const MintCtrl = require('./router/MintCtrl');
+const tokenCtrl = require('./router/TokenCtrl');
 const userCtrl = require('./router/UserCtrl');
-const UserBalanceCtrl = require('./router/UserBalanceCtrl');
-const TransferCtrl = require('./router/TransferCtrl');
-const BurnCtrl = require('./router/BurnCtrl');
+
 
 const apiRouter = require('./apiRouter').router;
 const cors = require('cors');//evite les erreurs Cross-Allow-Origin
-const passport = require('passport');
-const Passport = require('./config/passportJWT');
-const Utils = require("./config/Utils");
 
 const app = express();
 const port = 3000;
@@ -23,6 +16,7 @@ const port = 3000;
 
 
 userCtrl.initAdminCreation();
+tokenCtrl.close_fairmint();
 
 
 // Configuration des middlewares
@@ -79,6 +73,10 @@ app.get('/mydeploy', (req, res) => {
 
 app.get('/mybalance', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'mybalance.html'));
+});
+
+app.get('/explorer', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'explorer.html'));
 });
 
 app.get('/token', (req, res) => {

@@ -46,6 +46,10 @@ const DeploySchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    completedTime: {
+        type: Number,
+        required: false
+    },
     premine: {
         type: Number, default: 0,
         required: false
