@@ -16,7 +16,7 @@ const port = 3000;
 
 
 userCtrl.initAdminCreation();
-tokenCtrl.close_fairmint();
+//tokenCtrl.close_fairmint();
 
 
 // Configuration des middlewares

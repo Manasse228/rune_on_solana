@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 let currentPage = 1;
 let totalPages = 1;
+const nodatadiv = document.getElementById('no-data');
 
 async function fetchData(page = 1) {
 
@@ -108,6 +109,7 @@ async function loadPage(page) {
     const data = await fetchData(page);
     totalPages = Number(data.totalPages);
     if (totalPages >0) {
+        nodatadiv.style.display = 'none'
         renderCards(data.result);
         renderPagination();
     } else {
@@ -115,6 +117,8 @@ async function loadPage(page) {
         container.innerHTML = '';
         const paginationContainer = document.querySelector('.pagination');
         paginationContainer.innerHTML = '';
+
+        nodatadiv.style.display = 'block'
     }
 
 }

@@ -47,11 +47,11 @@ module.exports = {
                     });                    
                     return Utils.getJsonResponse('ok', 200, '', result, res);
                 } else {
-                    return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                    return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
                 }
             })
             .catch(_ => {
-                return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
             });
         } 
     },
@@ -83,11 +83,11 @@ module.exports = {
 
                     return Utils.getJsonResponse('error', 200, '', errors, res);
                 } else {
-                    return Utils.getJsonResponse('error', 201, '', '<p>The Solana blockchain is congested. Please try again later.</p>', res);
+                    return Utils.getJsonResponse('error', 500, '', 'The Solana blockchain is congested. Please try again later.', res);
                 }
             })
             .catch(_ => {
-                return Utils.getJsonResponse('error', 201, '', '<p>The Solana blockchain is congested. Please try again later.</p>', res);
+                return Utils.getJsonResponse('error', 500, '', 'The Solana blockchain is congested. Please try again later.', res);
             });
         }
     },
@@ -256,12 +256,12 @@ module.exports = {
                                             })
                                             .catch(err => {
                                                 console.error('Error with bulk UserBalanceModel Transfer', err);
-                                                return Utils.getJsonResponse('ok', 201, '', '<p>The Solana blockchain is congested. Please try again later.</p>', res);
+                                                return Utils.getJsonResponse('ok', 500, '', 'The Solana blockchain is congested. Please try again later.', res);
                                             });
                                     })
                                     .catch(err => {
                                         console.error('Error with bulk TransferModel Transfer', err);
-                                        return Utils.getJsonResponse('ok', 201, '', '<p>The Solana blockchain is congested. Please try again later.</p>', res);
+                                        return Utils.getJsonResponse('ok', 500, '', 'The Solana blockchain is congested. Please try again later.', res);
                                     });
 
                         } else {
@@ -273,12 +273,12 @@ module.exports = {
                     }
 
                 } else {
-                    return Utils.getJsonResponse('error', 201, '', '<p>The Solana blockchain is congested. Please try again later.</p>', res);
+                    return Utils.getJsonResponse('error', 500, '', 'The Solana blockchain is congested. Please try again later.', res);
                 }
             })
             .catch(_ => {
                 console.log(_)
-                return Utils.getJsonResponse('error', 201, '', '<p>The Solana blockchain is congested. Please try again later.</p>', res);
+                return Utils.getJsonResponse('error', 500, '', 'The Solana blockchain is congested. Please try again later.', res);
             });
         }
     }
@@ -289,9 +289,9 @@ module.exports.validate = (method) => {
     switch (method) {
         case 'checkTransfer': {
             return [
-                check('tokenName', "<p>tokenName parameter does not exist</p>").exists(),
-                check('tokenName', "<p>tokenName parameter must not be empty</p>").trim().not().isEmpty(),
-                check('tokenName', "<p>This token does not exist</p>").trim().custom(value => {
+                check('tokenName', "tokenName parameter does not exist").exists(),
+                check('tokenName', "tokenName parameter must not be empty").trim().not().isEmpty(),
+                check('tokenName', "This token does not exist").trim().custom(value => {
                     return new Promise(async (resolve, reject) => {
                         const tokenInfo = await DeployModel.findOne({ name: value}).lean();
                         if (tokenInfo) {
@@ -302,17 +302,17 @@ module.exports.validate = (method) => {
                     })
                 }),
 
-                check('senderAddress', "<p>senderAddress parameter does not exist</p>").exists(),
-                check('senderAddress', "<p>You must set the Sender address</p>").trim().not().isEmpty(),
+                check('senderAddress', "senderAddress parameter does not exist").exists(),
+                check('senderAddress', "You must set the Sender address").trim().not().isEmpty(),
 
-                check('receiverAddress', "<p>receiverAddress parameter does not exist</p>").exists(),
-                check('receiverAddress', "<p>You must set the Receiver address</p>").trim().not().isEmpty(),
+                check('receiverAddress', "receiverAddress parameter does not exist").exists(),
+                check('receiverAddress', "You must set the Receiver address").trim().not().isEmpty(),
 
 
-                check('amount', "<p>The amount parameter does not exist</p>").exists(),
-                check('amount', "<p>The amount must not be empty</p>").trim().not().isEmpty(),
-                check('amount', "<p>The amount must be a number</p>").trim().isInt(),
-                check('amount', "<p>The amount must be greater than 0</p>").trim().custom(value => {
+                check('amount', "The amount parameter does not exist").exists(),
+                check('amount', "The amount must not be empty").trim().not().isEmpty(),
+                check('amount', "The amount must be a number").trim().isInt(),
+                check('amount', "The amount must be greater than 0").trim().custom(value => {
                     return new Promise((resolve, reject) => {
                         if (value && value >= 1) {
                             return resolve();
@@ -325,18 +325,18 @@ module.exports.validate = (method) => {
         }
         case 'holderAddress': {
             return [
-                check('holderAddress', "<p>holderAddress parameter does not exist</p>").exists(),
-                check('holderAddress', "<p>You must set the Sender address</p>").trim().not().isEmpty(),
+                check('holderAddress', "holderAddress parameter does not exist").exists(),
+                check('holderAddress', "You must set the Sender address").trim().not().isEmpty(),
             ]
         }
         case 'saveTransfer': {
             return [
-                body('from', "<p>from parameter does not exist</p>").exists(),
-                body('from', "<p>from parameter must not be empty</p>").trim().not().isEmpty(),
+                body('from', "from parameter does not exist").exists(),
+                body('from', "from parameter must not be empty").trim().not().isEmpty(),
                 
 
-                body('to', "<p>to parameter does not exist</p>").exists(),
-                body('to', "<p>to parameter must not be empty</p>").trim().not().isEmpty(),
+                body('to', "to parameter does not exist").exists(),
+                body('to', "to parameter must not be empty").trim().not().isEmpty(),
                 /*body('to', "<p>The Receiver address is not a valid Solana address.</p>").trim().custom(value => {
                     return new Promise((resolve, reject) => {
                         try {
@@ -348,9 +348,9 @@ module.exports.validate = (method) => {
                     })
                 }),*/
 
-                body('signature', "<p>signature parameter does not exist</p>").exists(),
-                body('signature', "<p>signature parameter must not be empty</p>").trim().not().isEmpty(),
-                body('signature', "<p>This signature already exist</p>").trim().custom(value => {
+                body('signature', "signature parameter does not exist").exists(),
+                body('signature', "signature parameter must not be empty").trim().not().isEmpty(),
+                body('signature', "This signature already exist").trim().custom(value => {
                     return new Promise(async (resolve, reject) => {
                         const transferExists = await TransferModel.exists({ transactionHash: value });
                         if (transferExists) {

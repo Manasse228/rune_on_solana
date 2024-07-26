@@ -123,7 +123,6 @@ module.exports = {
 
             // Check if the requested page exists
             if (page > totalPages) {
-                console.log({ message: 'Page not found', totalPages: totalPages });
                 return Utils.getJsonResponse('ok', 200, '', {result : {}, totalPages: totalPages}, res); 
             } else {
                 // Apply pagination

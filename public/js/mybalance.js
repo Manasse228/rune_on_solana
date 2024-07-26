@@ -55,16 +55,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       const result = _result.data;
 
       if (_result && _result.errorcode === 400 && _result.errortext) {
+        notyf.error(_result.errortext);
         burnErrorNotification.innerHTML = _result.errortext;
         burnErrorNotification.style.display = 'block';
       }
 
-      if (result && result.length > 0) {
+      if ( (_result && _result.errorcode === 500) || (result && result.length > 0) ) {
         burnErrorNotification.innerHTML = result.join('');
         burnErrorNotification.style.display = 'block';
       }
 
-      if (result && result.length === 0) {
+
+      if ((_result && _result.errorcode === 200) && result && result.length === 0) {
         burnErrorNotification.style.display = 'none';
 
         const dataObject = {
@@ -109,17 +111,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (_result && _result.errorcode === 400 && _result.errortext) {
           notyf.error(_result.errortext);
+          burnErrorNotification.innerHTML = _result.errortext;
+          burnErrorNotification.style.display = 'block';
         }
 
         if (_result && _result.errorcode === 200 && _result.data) {
+          burnErrorNotification.style.display = 'none';
           burnDivMsg.innerHTML = `<p>Token burned with success. <a target="_blank" href="https://solscan.io/tx/${signature}">Your transaction hash</a> </p>`;
           burnAlert.classList.remove('d-none');
           updateTable();
         } 
         
         if (_result && _result.errorcode === 201 && _result.data) {
-          burnDivMsg.innerHTML = _result.data;
-          burnAlert.classList.remove('d-none');
+          burnErrorNotification.innerHTML = _result.data.join('');
+          burnErrorNotification.style.display = 'block';
         }
       }
 
@@ -150,16 +155,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       const result = _result.data;
 
       if (_result && _result.errorcode === 400 && _result.errortext) {
+        notyf.error(_result.errortext);
         transferErrorNotification.innerHTML = _result.errortext;
         transferErrorNotification.style.display = 'block';
       }
 
-      if (result && result.length > 0) {
+      if ( (_result && _result.errorcode === 500) || (result && result.length > 0) ) {
         transferErrorNotification.innerHTML = result.join('');
         transferErrorNotification.style.display = 'block';
       }
 
-      if (result && result.length === 0) {
+      if ((_result && _result.errorcode === 200) && result && result.length === 0) {
         transferErrorNotification.style.display = 'none';
 
         const dataObject = {
@@ -203,11 +209,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         transferAlert.removeAttribute('style');
 
+        if (_result && _result.errorcode === 500) {
+          transferErrorNotification.innerHTML = _result.data.join('');
+          transferErrorNotification.style.display = 'block';
+        }
+
         if (_result && _result.errorcode === 400 && _result.errortext) {
           notyf.error(_result.errortext);
+          transferErrorNotification.innerHTML = _result.errortext;
+          transferErrorNotification.style.display = 'block'
         }
 
         if (_result && _result.errorcode === 200 && _result.data) {
+          transferErrorNotification.style.display = 'none';
           transferDivMsg.innerHTML = `<p>Token transfered with success. <a target="_blank" href="https://solscan.io/tx/${signature}">Your transaction hash</a> </p>`;
           transferAlert.classList.remove('d-none');
           updateTable();

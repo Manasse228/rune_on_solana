@@ -120,11 +120,11 @@ module.exports = {
 
                     return Utils.getJsonResponse('ok', 200, '', errors, res);
                 } else {
-                    return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                    return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
                 }
             })
             .catch(_ => {
-                return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
             });
         }
     },
@@ -211,17 +211,17 @@ module.exports = {
                                                 })
                                                 .catch(err => {
                                                     console.error('Error with bulk DeployModel', err);
-                                                    return Utils.getJsonResponse('ok', 201, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                                                    return Utils.getJsonResponse('ok', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
                                                 });
                                                 })
                                         .catch(err => {
                                             console.error('Error with bulk UserBalanceModel Burn', err);
-                                            return Utils.getJsonResponse('ok', 201, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                                            return Utils.getJsonResponse('ok', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
                                         });
                                 })
                                 .catch(err => {
                                     console.error('Error with bulk BurnModel', err);
-                                    return Utils.getJsonResponse('ok', 201, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                                    return Utils.getJsonResponse('ok', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
                                 });
 
                         } else {
@@ -231,11 +231,11 @@ module.exports = {
                         return Utils.getJsonResponse('ok', 201, '', ['<p>Your blockchain transaction is not valid.</p>'], res);
                     }
                 } else {
-                    return Utils.getJsonResponse('error', 201, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                    return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
                 }
             })
             .catch(_ => {
-                return Utils.getJsonResponse('error', 201, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                return Utils.getJsonResponse('error', 500, '', ['The Solana blockchain is congested. Please try again later.'], res);
             });
         }
     },
@@ -275,7 +275,7 @@ module.exports = {
                 }
             })
             .catch(_ => {
-                return Utils.getJsonResponse('error', 200, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
+                return Utils.getJsonResponse('error', 500, '', ['<p>The Solana blockchain is congested. Please try again later.</p>'], res);
             });
         }
     },

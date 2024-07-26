@@ -1,0 +1,162 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Explorer our world</title><link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"><link rel="icon" href="asset/breakfast.jpeg" type="image/x-icon"><style>.pagecontents {
+      background-color: #1b1b1b !important;
+      color: white !important;
+    }
+
+    .styled-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .styled-text hr {
+      flex: 1;
+      border-top: 1px solid #000;
+    }
+    .styled-text span {
+      margin: 0 10px;
+      white-space: nowrap;
+    }
+
+    body {
+      background-color: #1b1b1b;
+      color: white;
+    }
+
+    /* Table Header Background Color */
+   .table thead th {
+        color: white; /* White text */
+    }
+
+    .table tbody {
+        color: white;
+    }
+
+    .table tbody tr:hover {
+        color: white;
+    }
+
+    .info-card {
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+        background-color: #fff;
+        margin-bottom: 20px; /* Add margin for better spacing */
+    }
+    .info-card h5 {
+        color: #6c757d;
+        font-weight: bold;
+    }
+    .info-card .value {
+        font-size: 2rem;
+        margin: 10px 0;
+        color: #6c757d;
+    }
+    .info-card .change {
+        color: green;
+        font-size: 0.9rem;
+    }
+    .info-card .change.negative {
+        color: red;
+    }
+
+    .btn-rounded {
+      border-radius: 25px;
+    }
+
+
+
+    .card-custom {
+      margin-bottom: 20px;
+      background-color: #202020;
+      color: white;
+      text-align: center;
+    }
+
+    .card-custom .card-body {
+        padding: 10px;
+        background-color: black;
+    }
+
+    .card-custom .card-title {
+      font-size: 1.2em;
+      color: rgb(219 62 55);
+      margin-top: 11px;
+      text-align: left;
+    }
+
+    .card-custom .card-text {
+        font-size: 1.4em;
+    }
+
+    .card-custom .card-footer {
+        background-color: #333;
+        color: #888;
+    }
+
+
+
+
+    /* Responsive adjustments */
+    @media (max-width: 767px) {
+      .dashboard-nav {
+        display: none;
+      }
+      .dashboard-app {
+        width: 100%;
+      }
+      .info-card {
+        margin-bottom: 15px;
+      }
+    }
+
+    .search-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .search-box {
+      width: 50%;
+      border: 1px solid #ff0000; /* Border color similar to the image */
+      border-radius: 25px;
+      padding: 10px;
+    }
+    .search-box input[type="text"] {
+      border: none;
+      outline: none;
+      width: 90%;
+    }
+    .search-box .fa-search {
+      color: #ff0000; /* Icon color */
+    }
+    .search-box input[type="text"]::placeholder {
+      color: #cccccc; /* Placeholder color */
+    }
+    .operation-info {
+      color: #ffffff; /* Text color similar to the image */
+      margin-top: 10px;
+    }
+
+
+    .text-image-inline {
+      display: flex;
+      align-items: center;
+    }
+
+    .inline-text {
+      margin-right: 10px; /* Adjust space between text and image as needed */
+      white-space: nowrap; /* Prevent text from wrapping to next line */
+    }
+
+    .inline-image {
+      max-height: 50px; /* Adjust size of image as needed */
+      width: auto; /* Maintain aspect ratio */
+    }
+
+
+    .rounded-image {
+      border-radius: 50%; /* Makes the image circular */
+    }
+
+    .center-content {
+      text-align: center;
+    }</style><script defer="defer" src="explorer.bundle.js"></script></head><body><div class="dashboard"><div class="dashboard-nav"><header><a href="#hop" class="menu-toggle"><i class="fas fa-bars"></i> </a><a class="brand-logo"><img src="/asset/breakfast_mini.png" style="width: 32px; height: 32px;"> <span>Breakfast</span></a></header><nav class="dashboard-nav-list"><a href="/" class="dashboard-nav-item"><i class="fas fa-home"></i> Home </a><a href="/mybalance" class="dashboard-nav-item"><i class="fas fa-wallet"></i> Spot </a><a href="/deploy" class="dashboard-nav-item"><i class="fas fa-wifi"></i> Deploy</a><div class="dashboard-nav-dropdown"><a href="#!" class="dashboard-nav-item dashboard-nav-dropdown-toggle"><i class="fas fa-hand-holding-usd"></i> Mint</a><div class="dashboard-nav-dropdown-menu"><a href="/ongoingmint" class="dashboard-nav-dropdown-item">Active</a> <a href="/upcomingmint" class="dashboard-nav-dropdown-item">Coming soon</a> <a href="/passedmint" class="dashboard-nav-dropdown-item">Completed</a></div></div><div class="dashboard-nav-dropdown"><a href="#!" class="dashboard-nav-item dashboard-nav-dropdown-toggle"><i class="fas fa-exchange-alt"></i> My Operations</a><div class="dashboard-nav-dropdown-menu"><a href="/mymints" class="dashboard-nav-dropdown-item">Mint</a> <a href="/mydeploy" class="dashboard-nav-dropdown-item">Deploy</a> <a href="/myburn" class="dashboard-nav-dropdown-item">Burn</a> <a href="/mytransfer" class="dashboard-nav-dropdown-item">Transfer</a> <a href="#" class="dashboard-nav-dropdown-item">Airdrop</a></div></div><a href="/explorer" class="dashboard-nav-item active"><i class="fas fa-globe"></i> Explorer</a></nav></div><div class="dashboard-app"><header class="dashboard-toolbar"><a href="#!" class="menu-toggle"><i class="fas fa-bars"></i></a><div id="wallet-info" class="navbar-text ml-auto" style="display: none;"><span id="public-key"></span> <span id="balance"></span> <a href="#" id="disconnect" style="color: white;"><i class="fas fa-sign-out-alt"></i></a></div></header><div class="dashboard-content pagecontents"><div class=""><div class="card pagecontents"><div class="card-header"><h1>The journey has only just begun</h1></div><div class="card-body"><div class="search-container"><div class="form-group"><input class="form-control" id="sol_address" placeholder="bnrfdipghbijgbpuisq45ddgdf...gh7" style="border: 1px solid #ff0000; border-radius: 25px;"><div class="error-message" id="notification_sol_address" style="display: none;">Solana address is required.</div></div><div class="operation-info">Recognize all operations including DEPLOY, MINT, AIDROP and TRANSFER.</div></div><div class="container mt-5"><div class="row" id="card-container"></div><nav aria-label="Page navigation example"><ul class="pagination justify-content-center"></ul></nav><div class="d-flex justify-content-center align-items-center full-height"><div class="center-content" style="display: block;" id="no-data"><img src="./asset/no-data.png" alt="No data icon" class="img-fluid mb-3"> <span>No data</span></div></div></div></div></div></div></div></div></div><script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script><script src="https://cdn.jsdelivr.net/npm/tableexport.jquery.plugin@1.29.0/tableExport.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/bootstrap-table-locale-all.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.6/dist/extensions/export/bootstrap-table-export.min.js"></script><script src="explorer.bundle.js"></script></body></html>

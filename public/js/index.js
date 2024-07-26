@@ -160,7 +160,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             align: 'center',
             valign: 'middle',
             sortable: true,
-            formatter: formatEnglish
+            formatter: formatEnglish,
+            class: 'hide-column',
           },
           {
             title: 'Holders',
@@ -168,14 +169,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             align: 'center',
             valign: 'middle',
             sortable: true,
-            formatter: formatEnglish
+            formatter: formatEnglish,
+            class: 'hide-column',
+            //visible: false
           },
           {
             title: 'Premine (%)',
             field: 'premine',
             align: 'center',
             valign: 'middle',
-            sortable: true
+            sortable: true,
+            class: 'hide-column',
           },
           {
             title: 'Deploy time',
@@ -183,7 +187,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             align: 'center',
             valign: 'middle',
             sortable: true,
-            formatter: convertTimestamp 
+            formatter: convertTimestamp ,
+            class: 'hide-column',
           },
           {
             title: 'Progress',
@@ -191,7 +196,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             align: 'center',
             valign: 'middle',
             sortable: true,
-            formatter: progressFormatter
+            formatter: progressFormatter,
+            class: 'hide-column'
           },
           {
             title: 'Airdrop',
